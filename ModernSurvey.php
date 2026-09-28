@@ -12,8 +12,13 @@ class ModernSurvey extends AbstractExternalModule
 {
     public function redcap_every_page_top($project_id)
     {
-        if ($this->isSurveySettingsPage())
+        if ($this->isSurveySettingsPage()) {
             $this->injectSurveySettingsAssets($project_id);
+        } else {
+            global $custom_css;
+            if (!empty($custom_css) && strpos($custom_css, 'Modern Survey Theme:') !== false)
+                echo "<style type=\"text/css\">\n/* Preloaded Modern Survey CSS to eliminate FOUC */\n" . strip_tags($custom_css) . "\n</style>\n";
+        }
     }
 
     public function isSurveySettingsPage()
@@ -28,11 +33,11 @@ class ModernSurvey extends AbstractExternalModule
         return null;
     }
 
-    private function injectSurveySettingsAssets($project_id = null)
+    private function injectSurveySettingsAssets()
     {
         global $user_rights;
 
-        // 1. Load theme metadata from themes.json and read corresponding standalone CSS files
+        // Load theme metadata from themes.json and read corresponding standalone CSS files
         $themesJsonPath = $this->getSafePath('themes.json');
         $themes = [];
         if (file_exists($themesJsonPath))
@@ -47,17 +52,17 @@ class ModernSurvey extends AbstractExternalModule
             }
         }
 
-        // 2. Check File Repository availability
+        // Check File Repository availability
         $fileRepoEnabled = ($GLOBALS['file_repository_enabled'] == '1');
         if (isset($user_rights['file_repository']) && $user_rights['file_repository'] == '0')
             $fileRepoEnabled = false;
 
-        // 3. Initialize JavaScript Module Object (REDCap Native JSMO AJAX)
+        // Initialize JavaScript Module Object (REDCap Native JSMO AJAX)
         $this->initializeJavascriptModuleObject();
         $jsObject = $this->getJavascriptModuleObjectName();
         $jsonData = json_encode($themes);
 
-        // 4. Output stylesheet, themes data on JSMO, and main JavaScript
+        // Output stylesheet, themes data on JSMO, and main JavaScript
         $cssUrl = $this->getUrl('css/survey_settings.css');
         $jsUrl = $this->getUrl('survey_settings.js');
 
@@ -73,7 +78,7 @@ class ModernSurvey extends AbstractExternalModule
     {
         global $user_rights;
 
-        // 1. Verify File Repository is enabled at the system level
+        // Verify File Repository is enabled at the system level
         if ($GLOBALS['file_repository_enabled'] != '1') {
             return [
                 'success' => false,
@@ -81,7 +86,7 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // 2. Verify user has File Repository permissions in this project
+        // Verify user has File Repository permissions in this project
         if (isset($user_rights['file_repository']) && $user_rights['file_repository'] == '0') {
             return [
                 'success' => false,
@@ -89,7 +94,7 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // 4. Validate payload
+        // Validate payload
         $dataUrl = $payload['dataUrl'] ?? '';
         $origName = basename($payload['filename'] ?? 'background.jpg');
 
@@ -109,7 +114,7 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // 5. Extract and decode Base64 data URL
+        // Extract and decode Base64 data URL
         if (!preg_match('/^data:([^;]+);base64,(.+)$/', $dataUrl, $matches)) {
             return [
                 'success' => false,
@@ -134,7 +139,7 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // 6. Write to temporary file for content inspection and upload
+        // Write to temporary file for content inspection and upload
         $tempFile = tempnam(sys_get_temp_dir(), 'ms_bg_');
         if (!$tempFile || file_put_contents($tempFile, $binaryData) === false) {
             if ($tempFile && file_exists($tempFile)) @unlink($tempFile);
@@ -158,7 +163,7 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // 7. Store file in REDCap edocs storage
+        // Store file in REDCap edocs storage
         $fileArray = [
             'name' => $origName,
             'type' => $detectedMime,
@@ -178,7 +183,7 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // 8. Add file to REDCap File Repository
+        // Add file to REDCap File Repository
         $comment = 'Modern Survey Background: ' . $origName;
         $repoAdded = REDCap::addFileToRepository($edoc_id, $project_id, $comment, false, $origName);
         if (!$repoAdded) {
@@ -203,7 +208,7 @@ class ModernSurvey extends AbstractExternalModule
         // even if general public file sharing is disabled at the system level
         db_query("REPLACE INTO redcap_docs_attachments (docs_id) VALUES (?)", [$docs_id]);
 
-        // 9. Generate public link using REDCap FileRepository framework
+        // Generate public link using REDCap FileRepository framework
         $publicLink = FileRepository::getPublicLink($docs_id, $project_id);
         if (!$publicLink) {
             return [
