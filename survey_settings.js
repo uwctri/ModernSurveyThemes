@@ -41,9 +41,9 @@ $(() => {
 			</div>
 			<p class="ms-card-desc">${escapeHtml(theme.description)}</p>
 			<div class="ms-card-meta">
+			  <span class="ms-tag"><i class="fas fa-palette"></i> ${escapeHtml(theme.tagline || 'Theme Palette')}</span>
 			  <span class="ms-tag"><i class="fas fa-shapes"></i> ${theme.radius} Corners</span>
 			  <span class="ms-tag"><i class="far fa-image"></i> ${escapeHtml(theme.bg_name)}</span>
-			  <span class="ms-tag"><i class="fas fa-check-circle"></i> Enhanced Choices</span>
 			</div>
 		  </div>
 		  <button type="button" class="ms-card-btn">${buttonLabel}</button>
@@ -56,7 +56,7 @@ $(() => {
 		<div id="modern_survey_container">
 		  <div class="ms-header">
 			<div class="ms-header-title">
-			  <div class="ms-header-icon"><i class="fas fa-magic"></i></div>
+			  <div class="ms-header-icon"><i class="fas fa-layer-group"></i></div>
 			  <div class="ms-header-text">
 				<h3>Modern Survey Themes</h3>
 				<p>Select a modern responsive theme with rounded card containers, sleek field controls, and subtle background styling.</p>
@@ -64,8 +64,18 @@ $(() => {
 			</div>
 			<div id="ms_status_wrapper">${statusBadgeHtml}</div>
 		  </div>
-		  <div class="ms-cards-grid">
-			${cardsHtml}
+		  <div class="ms-carousel-wrapper">
+			<button type="button" class="ms-bumper-btn ms-bumper-left" id="ms_bumper_prev" aria-label="Previous Themes" title="Scroll Left">
+			  <i class="fas fa-chevron-left"></i>
+			</button>
+			<div class="ms-cards-scroll-container" id="ms_cards_scroll">
+			  <div class="ms-cards-track">
+				${cardsHtml}
+			  </div>
+			</div>
+			<button type="button" class="ms-bumper-btn ms-bumper-right" id="ms_bumper_next" aria-label="Next Themes" title="Scroll Right">
+			  <i class="fas fa-chevron-right"></i>
+			</button>
 		  </div>
 		  <div class="ms-options-bar">
 			<div class="ms-option-group">
@@ -88,12 +98,26 @@ $(() => {
 				<option value="slate_grid">Slate Micro-Grid (Geometric Tech)</option>
 				<option value="dark_glow">Obsidian Deep Glow (Atmospheric)</option>
 				<option value="solid">Subtle Solid Tint (No Pattern)</option>
-				<option value="custom">Custom Image URL...</option>
+				<option value="custom">Custom Image Upload / URL...</option>
 			  </select>
 			</div>
-			<div class="ms-option-group" id="ms_custom_bg_group" style="display:none;">
-			  <label for="ms_custom_bg_url">Image URL:</label>
-			  <input type="text" id="ms_custom_bg_url" class="ms-input-text" placeholder="https://example.com/background.jpg">
+			<div class="ms-option-group" id="ms_custom_bg_group" style="display:none; flex-wrap: wrap; gap: 8px;">
+			  <input type="file" id="ms_bg_file_input" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;">
+			  <button type="button" class="ms-btn-upload" id="ms_btn_upload_bg" ${module && module.fileRepoEnabled ? '' : 'disabled style="opacity:0.6; cursor:not-allowed;" title="File Repository is not enabled in REDCap. Enable it in REDCap to upload images."'} >
+				<i class="fas fa-cloud-upload-alt"></i> Upload to File Repo...
+			  </button>
+			  ${module && module.fileRepoEnabled ? '' : '<span style="color:#b45309; font-size:11.5px; display:inline-flex; align-items:center; gap:4px;"><i class="fas fa-exclamation-triangle"></i> File Repository disabled (Uploads unavailable)</span>'}
+			  <span id="ms_bg_upload_status" class="ms-upload-status" style="display:none;"></span>
+			  <input type="text" id="ms_custom_bg_url" class="ms-input-text" placeholder="Or enter image URL..." style="width: 190px;">
+			  <label for="ms_bg_blur" style="margin-left: 4px;"><i class="fas fa-tint"></i> Blur:</label>
+			  <select id="ms_bg_blur" class="ms-select">
+				<option value="0px">None (0px - Sharp)</option>
+				<option value="4px">Subtle (4px)</option>
+				<option value="8px" selected>Medium (8px - Recommended)</option>
+				<option value="14px">Soft Focus (14px)</option>
+				<option value="20px">Heavy (20px)</option>
+				<option value="30px">Dreamy (30px)</option>
+			  </select>
 			</div>
 		  </div>
 		  <div class="ms-actions-row">
@@ -190,7 +214,7 @@ $(() => {
 			  </tr>
 			</tbody>
 		  </table>
-		  <div id="footer">Powered by REDCap & Modern Survey Themes</div>
+		  <div id="footer" style="text-align: center !important; width: 100% !important; margin: 0 auto !important; padding: 18px 0 10px !important;">Powered by REDCap & Modern Survey Themes</div>
 		</div>
 	  </div>
 	  <style>${css}</style>
@@ -208,9 +232,63 @@ $(() => {
 		solid: 'background-image: none !important;'
 	}
 
-	const applyBackgroundToCss = (css, bgStyle, customBgUrl) => {
+	const applyBackgroundToCss = (css, bgStyle, customBgUrl, blurAmount) => {
 		if (bgPresets[bgStyle]) return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1${bgPresets[bgStyle]}`)
-		if (bgStyle === 'custom' && customBgUrl) return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1background-image: url("${customBgUrl}") !important; background-repeat: no-repeat !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important;`)
+		if (bgStyle === 'custom' && customBgUrl) {
+			let blur = blurAmount || '0px'
+			if (blur !== '0px' && blur !== '0') {
+				let blurredRule = `
+body {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+body::before {
+  content: "" !important;
+  position: fixed !important;
+  top: -20px !important;
+  left: -20px !important;
+  right: -20px !important;
+  bottom: -20px !important;
+  width: calc(100% + 40px) !important;
+  height: calc(100% + 40px) !important;
+  background-image: url("${customBgUrl}") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+  filter: blur(${blur}) !important;
+  -webkit-filter: blur(${blur}) !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+#ms_preview_modal_content {
+  position: relative !important;
+  overflow: hidden !important;
+}
+#ms_preview_modal_content::before {
+  content: "" !important;
+  position: absolute !important;
+  top: -20px !important;
+  left: -20px !important;
+  right: -20px !important;
+  bottom: -20px !important;
+  background-image: url("${customBgUrl}") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center !important;
+  filter: blur(${blur}) !important;
+  -webkit-filter: blur(${blur}) !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+#ms_preview_modal_content #pagecontainer {
+  position: relative !important;
+  z-index: 1 !important;
+}`
+				return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1background-image: none !important;`) + blurredRule
+			}
+			return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1background-image: url("${customBgUrl}") !important; background-repeat: no-repeat !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important;`)
+		}
 		return css
 	}
 
@@ -223,11 +301,18 @@ $(() => {
             selectedThemeId = match[1]
         } else activeThemeId = null
 
-        let bgMatch = css.match(/\/\* Modern Survey Background:\s*([a-zA-Z0-9_-]+)/)
+        let bgMatch = css.match(/\/\* Modern Survey Background:\s*([a-zA-Z0-9_-]+)(?:,\s*blur:\s*([0-9]+px))?(?:,\s*url:\s*([^\s*]+))?/)
         if (bgMatch && bgMatch[1] && $('#ms_bg_style').length) {
             $('#ms_bg_style').val(bgMatch[1])
-            if (bgMatch[1] === 'custom') $('#ms_custom_bg_group').show()
-            else $('#ms_custom_bg_group').hide()
+            if (bgMatch[1] === 'custom') {
+                $('#ms_custom_bg_group').show()
+                if (bgMatch[2] && $('#ms_bg_blur').length) $('#ms_bg_blur').val(bgMatch[2])
+                if (bgMatch[3] && $('#ms_custom_bg_url').length) {
+                    $('#ms_custom_bg_url').val(bgMatch[3])
+                    let filename = bgMatch[3].split('/').pop().split('?')[0]
+                    $('#ms_bg_upload_status').show().html(`<i class="fas fa-image"></i> ${escapeHtml(filename)}`)
+                }
+            } else $('#ms_custom_bg_group').hide()
         }
     }
 
@@ -299,11 +384,17 @@ $(() => {
         let radius = $('#ms_corner_radius').val()
         let bgStyle = $('#ms_bg_style').val()
         let customBgUrl = (bgStyle === 'custom') ? $('#ms_custom_bg_url').val() : ''
+        let blurAmount = (bgStyle === 'custom') ? $('#ms_bg_blur').val() : '0px'
 
         let css = theme.css
         if (radius !== theme.radius) css = css.replace(/--ms-radius:\s*[^;]+;/g, `--ms-radius: ${radius};`)
-        css = applyBackgroundToCss(css, bgStyle, customBgUrl)
-        if (bgStyle && bgStyle !== 'default') css = `/* Modern Survey Background: ${bgStyle} */\n` + css
+        css = applyBackgroundToCss(css, bgStyle, customBgUrl, blurAmount)
+        if (bgStyle && bgStyle !== 'default') {
+            let meta = `/* Modern Survey Background: ${bgStyle}`
+            if (bgStyle === 'custom') meta += `, blur: ${blurAmount}, url: ${customBgUrl}`
+            meta += ' */\n'
+            css = meta + css
+        }
 
         // 1. Update form inputs
         $('#custom_css').val(css)
@@ -356,9 +447,10 @@ $(() => {
         let radius = $('#ms_corner_radius').val()
         let bgStyle = $('#ms_bg_style').val()
         let customBgUrl = (bgStyle === 'custom') ? $('#ms_custom_bg_url').val() : ''
+        let blurAmount = (bgStyle === 'custom') ? $('#ms_bg_blur').val() : '0px'
 
         let css = theme.css.replace(/--ms-radius:\s*[^;]+;/g, `--ms-radius: ${radius};`)
-        css = applyBackgroundToCss(css, bgStyle, customBgUrl)
+        css = applyBackgroundToCss(css, bgStyle, customBgUrl, blurAmount)
 
         let modalHtml = previewModalTemplate(theme, css)
         if (typeof simpleDialog === 'function') simpleDialog(modalHtml, `Theme Preview: ${theme.name}`, 'ms_preview_dialog', 820)
@@ -390,7 +482,29 @@ $(() => {
         $('#survey_theme_design').closest('tr').hide()
     }
 
+    const updateBumperStates = () => {
+        let el = $('#ms_cards_scroll')[0]
+        if (!el) return
+        let atStart = el.scrollLeft <= 10
+        let atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 10
+        $('#ms_bumper_prev').toggleClass('disabled', atStart).prop('disabled', atStart)
+        $('#ms_bumper_next').toggleClass('disabled', atEnd).prop('disabled', atEnd)
+    }
+    setTimeout(updateBumperStates, 100)
+
     // Event Listeners
+    $(document).on('click', '#ms_bumper_prev', () => {
+        let $scroll = $('#ms_cards_scroll')
+        $scroll.animate({ scrollLeft: $scroll.scrollLeft() - 259 }, 250, updateBumperStates)
+    })
+
+    $(document).on('click', '#ms_bumper_next', () => {
+        let $scroll = $('#ms_cards_scroll')
+        $scroll.animate({ scrollLeft: $scroll.scrollLeft() + 259 }, 250, updateBumperStates)
+    })
+
+    $(document).on('scroll', '#ms_cards_scroll', updateBumperStates)
+
     $(document).on('click', '.ms-card', function() {
         let themeId = $(this).data('theme-id')
         selectedThemeId = themeId
@@ -400,11 +514,81 @@ $(() => {
         $('.ms-card-btn').text('Select Theme')
         if (activeThemeId === themeId) $(this).find('.ms-card-btn').text('✓ Currently Active')
         else $(this).find('.ms-card-btn').text('✓ Selected')
+
+        if ($(this)[0]) $(this)[0].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
     })
 
     $(document).on('change', '#ms_bg_style', function() {
         if ($(this).val() === 'custom') $('#ms_custom_bg_group').show()
         else $('#ms_custom_bg_group').hide()
+    })
+
+    $(document).on('click', '#ms_btn_upload_bg', (e) => {
+        if (!module.fileRepoEnabled) {
+            e.preventDefault()
+            alert('REDCap File Repository is disabled for this project or system. Uploading background images requires the File Repository to be enabled.')
+            return
+        }
+        $('#ms_bg_file_input').trigger('click')
+    })
+
+    $(document).on('change', '#ms_bg_file_input', function() {
+        let file = this.files[0]
+        if (!file) return
+
+        if (!module.fileRepoEnabled) {
+            alert('REDCap File Repository is not enabled. Background images cannot be uploaded.')
+            this.value = ''
+            return
+        }
+
+        let ext = file.name.split('.').pop().toLowerCase()
+        let allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif']
+        if (!allowed.includes(ext)) {
+            alert('Please select a valid image file (JPG, PNG, WEBP, or GIF).')
+            this.value = ''
+            return
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            alert('The selected image is larger than 10 MB. Please select a smaller image.')
+            this.value = ''
+            return
+        }
+
+        let $status = $('#ms_bg_upload_status')
+        $status.show().html('<i class="fas fa-spinner fa-spin"></i> Storing in File Repository...')
+
+        let reader = new FileReader()
+        reader.onload = (e) => {
+            let dataUrl = e.target.result
+
+            module.ajax('upload_bg_image', {
+                dataUrl: dataUrl,
+                filename: file.name
+            }).then((res) => {
+                if (res && res.success && res.url) {
+                    $('#ms_custom_bg_url').val(res.url)
+                    $status.html(`<i class="fas fa-check" style="color:#10b981;"></i> Saved to File Repo: ${escapeHtml(res.filename || file.name)}`)
+                    showToast('Background image saved to File Repository!')
+                } else {
+                    let err = (res && res.error) ? res.error : 'Upload failed'
+                    $status.html(`<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> ${escapeHtml(err)}`)
+                    alert('File Repository Upload Error: ' + err)
+                }
+            }).catch((err) => {
+                let msg = typeof err === 'string' ? err : (err && err.message ? err.message : 'Upload request failed.')
+                $status.html('<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Upload failed')
+                alert('Upload failed via REDCap AJAX framework: ' + msg)
+            })
+        }
+
+        reader.onerror = () => {
+            $status.html('<i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i> Read error')
+            alert('Failed to read selected image file.')
+        }
+
+        reader.readAsDataURL(file)
     })
 
     $(document).on('click', '#ms_btn_apply', (e) => {

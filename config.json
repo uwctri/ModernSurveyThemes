@@ -8,8 +8,9 @@
             "email": "Adam.Nunez@ctri.wisc.edu",
             "institution": "UW Madison - Center for Tobacco Research and Intervention"
         }
-	],
+    ],
     "framework-version": 17,
-    "system-settings": [],
-    "project-settings": []
+    "auth-ajax-actions": [
+        "upload_bg_image"
+    ]
 }

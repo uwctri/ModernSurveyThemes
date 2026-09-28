@@ -1,6 +1,28 @@
 /* Modern Survey Themes - Survey Settings Page Styles */
 
+/* Protect native REDCap survey settings columns from being squished */
+#survey_settings table tr > td:first-child[style*="width:25px"],
+#survey_settings table tr > td:first-child[style*="width: 25px"] {
+    width: 25px !important;
+    min-width: 25px !important;
+    max-width: 25px !important;
+}
+
+#survey_settings table tr > td:nth-child(2)[style*="width:290px"],
+#survey_settings table tr > td:nth-child(2)[style*="width: 290px"] {
+    width: 290px !important;
+    min-width: 290px !important;
+    max-width: 290px !important;
+}
+
+#modern_survey_tr > td {
+    padding: 10px 0 !important;
+    border: none !important;
+}
+
 #modern_survey_container {
+    width: 100% !important;
+    max-width: 100% !important;
     background: #ffffff;
     border: 1px solid #d1d5db;
     border-radius: 12px;
@@ -8,6 +30,8 @@
     margin: 15px 0 25px 0;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
 }
 
 .ms-header {
@@ -77,25 +101,115 @@
     background: #10b981;
 }
 
-/* Theme Cards Grid */
-.ms-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+/* Theme Carousel & Large Bumper Controls */
+.ms-carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
     margin-bottom: 20px;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    padding: 10px 12px;
+}
+
+.ms-bumper-btn {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none !important;
+    user-select: none;
+    z-index: 5;
+}
+
+.ms-bumper-btn:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    transform: scale(1.06);
+}
+
+.ms-bumper-btn:active {
+    transform: scale(0.96);
+}
+
+.ms-bumper-btn:focus,
+.ms-bumper-btn:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+}
+
+.ms-bumper-btn.disabled,
+.ms-bumper-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+}
+
+.ms-cards-scroll-container {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-behavior: smooth;
+    padding: 6px 4px;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box !important;
+}
+
+.ms-cards-scroll-container::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.ms-cards-track {
+    display: grid !important;
+    grid-template-rows: repeat(2, 1fr) !important;
+    grid-auto-flow: column !important;
+    grid-auto-columns: 245px !important;
+    gap: 14px !important;
+    align-items: stretch !important;
+    width: max-content !important;
 }
 
 .ms-card {
+    width: 245px !important;
+    min-width: 245px !important;
+    max-width: 245px !important;
     border: 2px solid #e5e7eb;
     border-radius: 12px;
     background: #ffffff;
-    padding: 16px;
+    padding: 12px 14px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .ms-card:hover {
@@ -112,10 +226,10 @@
 
 .ms-card-swatches {
     display: flex;
-    height: 24px;
-    border-radius: 6px;
+    height: 20px;
+    border-radius: 5px;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -132,45 +246,50 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 6px;
+    gap: 6px;
+    margin-bottom: 4px;
 }
 
 .ms-card-title {
-    font-size: 15px;
+    font-size: 13.5px;
     font-weight: 700;
     color: #111827;
     margin: 0;
+    line-height: 1.3;
 }
 
 .ms-card-category {
-    font-size: 10.5px;
+    font-size: 9.5px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 12px;
     background: #f3f4f6;
     color: #4b5563;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .ms-card-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: #4b5563;
-    line-height: 1.45;
-    margin: 0 0 12px 0;
+    line-height: 1.35;
+    margin: 0 0 8px 0;
+    min-height: 38px;
 }
 
 .ms-card-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 14px;
+    gap: 4px;
+    margin-bottom: 10px;
 }
 
 .ms-tag {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 6px;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
     background: #f1f5f9;
     color: #334155;
     display: inline-flex;
@@ -261,6 +380,41 @@
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
+.ms-btn-upload {
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    outline: none !important;
+}
+
+.ms-btn-upload:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.ms-upload-status {
+    font-size: 11.5px;
+    color: #475569;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Actions Row */
 .ms-actions-row {
     display: flex;
@@ -327,11 +481,19 @@
     border: 1px solid transparent;
     cursor: pointer;
     transition: all 0.15s ease;
+    outline: none !important;
 }
 
-.ms-btn-clear:hover {
-    color: #b91c1c;
-    background: #fef2f2;
+.ms-btn-clear:hover,
+.ms-btn-clear:focus,
+.ms-btn-clear:focus-visible,
+.ms-btn-clear:active {
+    color: #b91c1c !important;
+    background: #fef2f2 !important;
+    border-color: #fecaca !important;
+    outline: none !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
 }
 
 /* Info Callout */
@@ -419,4 +581,204 @@
 tr:has(#survey_theme_design) {
     display: none !important;
 }
+
+/* Ensure footer is centered in preview popup */
+#ms_preview_modal_content #footer,
+#ms_preview_dialog #footer {
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+/* Modern Accessibility / Font Resize Toolbar for Preview Modal */
+#ms_preview_modal_content #surveytitlelogo,
+#ms_preview_modal_content #surveytitlelogo.survey-titlebar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    padding: 22px 28px 14px !important;
+    margin: 0 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    background: transparent !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__left {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right,
+#ms_preview_modal_content #changeFont {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    background: #f8fafc !important;
+    padding: 4px 8px 4px 10px !important;
+    border-radius: 9999px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s ease !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right:hover,
+#ms_preview_modal_content #changeFont:hover {
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07) !important;
+    background: #ffffff !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right .font-resize-header {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 2px !important;
+    color: #64748b !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    padding-right: 5px !important;
+    margin-right: 2px !important;
+    border-right: 1px solid #e2e8f0 !important;
+    user-select: none !important;
+    line-height: 1 !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right .font-resize-header span {
+    font-family: system-ui, -apple-system, sans-serif !important;
+    line-height: 1 !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right .font-resize-header span:nth-child(1) {
+    font-size: 14px !important;
+    color: #334155 !important;
+    font-weight: 800 !important;
+}
+#ms_preview_modal_content .survey-titlebar__right .font-resize-header span:nth-child(2) {
+    font-size: 12px !important;
+    color: #64748b !important;
+    font-weight: 700 !important;
+}
+#ms_preview_modal_content .survey-titlebar__right .font-resize-header span:nth-child(3) {
+    font-size: 10px !important;
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right .nowrap {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right button.increaseFont,
+#ms_preview_modal_content .survey-titlebar__right button.decreaseFont,
+#ms_preview_modal_content .survey-titlebar__right #enable_text-to-speech,
+#ms_preview_modal_content .survey-titlebar__right #disable_text-to-speech {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    color: #475569 !important;
+    font-size: 11px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    outline: none !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right #mlm-change-lang {
+    width: auto !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    padding: 0 8px !important;
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    color: #475569 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    outline: none !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right .increaseFont i::before {
+    content: "\f067" !important;
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+    font-size: 11px !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right .decreaseFont i::before {
+    content: "\f068" !important;
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900 !important;
+    font-size: 11px !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right button.btn-link:hover,
+#ms_preview_modal_content .survey-titlebar__right button.increaseFont:hover,
+#ms_preview_modal_content .survey-titlebar__right button.decreaseFont:hover,
+#ms_preview_modal_content .survey-titlebar__right #enable_text-to-speech:hover,
+#ms_preview_modal_content .survey-titlebar__right #disable_text-to-speech:hover,
+#ms_preview_modal_content .survey-titlebar__right #mlm-change-lang:hover {
+    background: var(--ms-primary, #3b82f6) !important;
+    border-color: var(--ms-primary, #3b82f6) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-1px) scale(1.05) !important;
+    text-decoration: none !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right a,
+#ms_preview_modal_content .survey-titlebar__right a:link,
+#ms_preview_modal_content .survey-titlebar__right a:visited {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    color: #475569 !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 9999px !important;
+    padding: 3px 10px !important;
+    text-decoration: none !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.15s ease !important;
+}
+
+#ms_preview_modal_content .survey-titlebar__right a:hover,
+#ms_preview_modal_content .survey-titlebar__right a:active {
+    color: var(--ms-primary, #3b82f6) !important;
+    border-color: var(--ms-primary, #3b82f6) !important;
+    background: #ffffff !important;
+    text-decoration: none !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+}
+
 
