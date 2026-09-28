@@ -1,0 +1,15 @@
+{
+    "name": "Modern Survey Themes",
+    "description": "Transforms bland REDCap public surveys into stunning, modern surveys with rounded card containers, sleek field controls, and beautiful background images directly from the Survey Settings page.",
+    "namespace": "UWMadison\\ModernSurvey",
+    "authors": [
+        {
+            "name": "Adam Nunez",
+            "email": "Adam.Nunez@ctri.wisc.edu",
+            "institution": "UW Madison - Center for Tobacco Research and Intervention"
+        }
+	],
+    "framework-version": 17,
+    "system-settings": [],
+    "project-settings": []
+}
