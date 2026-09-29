@@ -68,8 +68,6 @@ class ModernSurvey extends AbstractExternalModule
 
     private function injectSurveySettingsAssets()
     {
-        global $user_rights;
-
         // Load theme metadata from themes.json and read corresponding standalone CSS files
         $themesJsonPath = $this->getSafePath('themes.json');
         $themes = json_decode(file_get_contents($themesJsonPath), true);
@@ -82,10 +80,13 @@ class ModernSurvey extends AbstractExternalModule
             $theme['css'] = str_replace('../fonts/fonts.css', $fontsCssUrl, $cssContent);
         }
 
-        // Check File Repository availability
+        // Check File Repository availability using framework user rights
         $fileRepoEnabled = ($GLOBALS['file_repository_enabled'] == '1');
-        if (isset($user_rights['file_repository']) && $user_rights['file_repository'] == '0')
-            $fileRepoEnabled = false;
+        if ($fileRepoEnabled) {
+            $rights = REDCap::getUserRights(USERID);
+            if (isset($rights[USERID]['file_repository']) && $rights[USERID]['file_repository'] == '0')
+                $fileRepoEnabled = false;
+        }
 
         // Initialize JavaScript Module Object (REDCap Native JSMO AJAX)
         $this->initializeJavascriptModuleObject();
@@ -108,8 +109,6 @@ class ModernSurvey extends AbstractExternalModule
 
     private function handleBackgroundUpload($payload, $project_id)
     {
-        global $user_rights;
-
         // Verify File Repository is enabled at the system level
         if ($GLOBALS['file_repository_enabled'] != '1') {
             return [
@@ -119,7 +118,8 @@ class ModernSurvey extends AbstractExternalModule
         }
 
         // Verify user has File Repository permissions in this project
-        if (isset($user_rights['file_repository']) && $user_rights['file_repository'] == '0') {
+        $rights = REDCap::getUserRights(USERID);
+        if (isset($rights[USERID]['file_repository']) && $rights[USERID]['file_repository'] == '0') {
             return [
                 'success' => false,
                 'error' => 'You do not have permission to upload files to the File Repository in this project.'

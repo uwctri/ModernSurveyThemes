@@ -17,6 +17,11 @@ $(() => {
     }
   }
 
+  const syncReqPosVisibility = () => {
+    let isNone = $('#ms_req_style').val() === 'none'
+    $('#ms_req_pos').closest('.ms-option-group').toggle(!isNone)
+  }
+
   const escapeHtml = (str) => {
     if (!str) return ''
     return $('<div>').text(str).html()
@@ -91,7 +96,9 @@ $(() => {
 			  <label for="ms_corner_radius"><svg class="ms-icon-corner" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-1px; margin-right:3px;"><path d="M3 13V6a3 3 0 0 1 3-3h7"/></svg>Corner Rounding:</label>
 			  <select id="ms_corner_radius" class="ms-select">
 				<option value="12px">Subtle (12px)</option>
+				<option value="14px">Compact (14px)</option>
 				<option value="16px" selected>Modern (16px - Recommended)</option>
+				<option value="18px">Smooth (18px)</option>
 				<option value="20px">Extra Rounded (20px)</option>
 				<option value="26px">Smooth Pill (26px)</option>
 			  </select>
@@ -117,6 +124,7 @@ $(() => {
 				<option value="pill">Badge Pill (Required)</option>
 				<option value="dot">Red Dot Indicator (•)</option>
 				<option value="classic">Classic Text (* must provide value)</option>
+				<option value="none">Don't Show</option>
 			  </select>
 			</div>
 			<div class="ms-option-group">
@@ -410,6 +418,13 @@ body::before {
     let st = style || 'asterisk'
     let css = '\n/* Custom Required Field Marker */\n'
 
+    if (st === 'none') {
+      css += `.requiredlabel, span.requiredlabel, div.requiredlabel {
+  display: none !important;
+}\n`
+      return css
+    }
+
     if (st === 'classic') {
       css += `.requiredlabel, span.requiredlabel, div.requiredlabel {
   display: inline-flex !important;
@@ -496,13 +511,22 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     return css
   }
 
-  // Helper: Detect active theme from #custom_css
+  // Helper: Detect active theme from #custom_css and update all UI option controls
   const detectCurrentTheme = () => {
     let css = $('#custom_css').val() || ''
     if (!css) {
       activeThemeId = null
       selectedThemeId = null
       syncNativeIframeVisibility()
+      if ($('#ms_corner_radius').length) $('#ms_corner_radius').val('16px')
+      if ($('#ms_bg_style').length) {
+        $('#ms_bg_style').val('default')
+        $('#ms_custom_bg_group').hide()
+      }
+      if ($('#ms_req_style').length) $('#ms_req_style').val('asterisk')
+      if ($('#ms_req_pos').length) $('#ms_req_pos').val('right')
+      if (typeof syncReqPosVisibility === 'function') syncReqPosVisibility()
+      if ($('#ms_autocomplete_min').length) $('#ms_autocomplete_min').val('5')
       return
     }
 
@@ -548,25 +572,32 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
 
     syncNativeIframeVisibility()
 
-    // Restore Corner Radius
+    // 3. Restore Corner Radius
     let radiusMatch = css.match(/--ms-radius:\s*([^;]+);/)
     if (radiusMatch && radiusMatch[1] && $('#ms_corner_radius').length) {
       let r = radiusMatch[1].trim()
-      if ($('#ms_corner_radius option[value="' + r + '"]').length) {
-        $('#ms_corner_radius').val(r)
-      } else if (activeThemeId && themes[activeThemeId]) {
-        $('#ms_corner_radius').val(themes[activeThemeId].radius)
+      if (!$('#ms_corner_radius option[value="' + r + '"]').length) {
+        $('#ms_corner_radius').append(`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`)
       }
+      $('#ms_corner_radius').val(r)
     } else if (activeThemeId && themes[activeThemeId] && $('#ms_corner_radius').length) {
-      $('#ms_corner_radius').val(themes[activeThemeId].radius)
+      let r = themes[activeThemeId].radius
+      if (!$('#ms_corner_radius option[value="' + r + '"]').length) {
+        $('#ms_corner_radius').append(`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`)
+      }
+      $('#ms_corner_radius').val(r)
     }
 
-    let bgMatch = css.match(/\/\* Modern Survey Background:\s*([a-zA-Z0-9_-]+)(?:,\s*blur:\s*([0-9]+px))?(?:,\s*url:\s*([^\s*]+))?/)
+    // 4. Restore Background Style and custom image options
+    let bgMatch = css.match(/Modern Survey Background:\s*([a-zA-Z0-9_-]+)(?:,\s*blur:\s*([0-9]+px))?(?:,\s*url:\s*([^\s*]+))?/i)
     if (bgMatch && bgMatch[1] && $('#ms_bg_style').length) {
       $('#ms_bg_style').val(bgMatch[1])
       if (bgMatch[1] === 'custom') {
         $('#ms_custom_bg_group').show()
         if (bgMatch[2] && $('#ms_bg_blur').length) {
+          if (!$('#ms_bg_blur option[value="' + bgMatch[2] + '"]').length) {
+            $('#ms_bg_blur').append(`<option value="${escapeHtml(bgMatch[2])}">${escapeHtml(bgMatch[2])}</option>`)
+          }
           $('#ms_bg_blur').val(bgMatch[2])
         }
         if (bgMatch[3] && $('#ms_custom_bg_url').length) {
@@ -577,21 +608,73 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
       } else {
         $('#ms_custom_bg_group').hide()
       }
+    } else if ($('#ms_bg_style').length) {
+      let detectedBg = 'default'
+      if (css.includes('/* MS_BG_START */')) {
+        for (let preset in bgPresets) {
+          if (css.includes(bgPresets[preset])) {
+            detectedBg = preset
+            break
+          }
+        }
+        if (detectedBg === 'default' && (css.includes('body::before') || css.includes('background-image: url('))) {
+          detectedBg = 'custom'
+        }
+      }
+      $('#ms_bg_style').val(detectedBg)
+      if (detectedBg === 'custom') {
+        $('#ms_custom_bg_group').show()
+      } else {
+        $('#ms_custom_bg_group').hide()
+      }
     }
 
-    let reqMatch = css.match(/\/\* Modern Survey Required:\s*pos:\s*([a-zA-Z0-9_-]+),\s*style:\s*([a-zA-Z0-9_-]+)/)
-    if (reqMatch) {
-      if (reqMatch[1] && $('#ms_req_pos').length) {
-        $('#ms_req_pos').val(reqMatch[1])
-      }
-      if (reqMatch[2] && $('#ms_req_style').length) {
-        $('#ms_req_style').val(reqMatch[2])
+    // 5. Restore Required Marker style and position
+    let reqPosMatch = css.match(/Modern Survey Required:[^\r\n*]*\bpos:\s*([a-zA-Z0-9_-]+)/i)
+    let reqStyleMatch = css.match(/Modern Survey Required:[^\r\n*]*\bstyle:\s*([a-zA-Z0-9_-]+)/i)
+
+    let reqPos = reqPosMatch ? reqPosMatch[1].toLowerCase() : null
+    let reqStyle = reqStyleMatch ? reqStyleMatch[1].toLowerCase() : null
+
+    // Fallback detection from CSS rules if metadata comment is not present
+    if (!reqStyle) {
+      if (css.includes('/* Custom Required Field Marker */') || css.includes('.requiredlabel')) {
+        if (css.includes('.requiredlabel') && css.includes('display: none !important')) {
+          reqStyle = 'none'
+        } else if (css.includes('content: "Required" !important')) {
+          reqStyle = 'pill'
+        } else if (css.includes('border-radius: 50% !important')) {
+          reqStyle = 'dot'
+        } else if (css.includes('font-weight: 600 !important') && css.includes('color: #ef4444 !important')) {
+          reqStyle = 'classic'
+        } else if (css.includes('content: "*" !important')) {
+          reqStyle = 'asterisk'
+        }
       }
     }
 
-    let acMatch = css.match(/\/\* Modern Survey Autocomplete:\s*min:\s*([a-zA-Z0-9_-]+)/)
+    if (!reqPos) {
+      if (css.includes('order: -1 !important') || css.includes('float: left !important')) {
+        reqPos = 'left'
+      } else if (css.includes('order: 1 !important')) {
+        reqPos = 'right'
+      }
+    }
+
+    if (reqPos && $('#ms_req_pos').length) {
+      $('#ms_req_pos').val(reqPos)
+    }
+    if (reqStyle && $('#ms_req_style').length) {
+      $('#ms_req_style').val(reqStyle)
+    }
+    if (typeof syncReqPosVisibility === 'function') {
+      syncReqPosVisibility()
+    }
+
+    // 6. Restore Autocomplete threshold
+    let acMatch = css.match(/Modern Survey Autocomplete:\s*min:\s*([a-zA-Z0-9_-]+)/i)
     if (acMatch && acMatch[1] && $('#ms_autocomplete_min').length) {
-      let val = acMatch[1]
+      let val = acMatch[1].toLowerCase()
       if (['5', '10', 'always', 'never'].includes(val)) {
         $('#ms_autocomplete_min').val(val)
       } else {
@@ -686,6 +769,7 @@ html body, body {
     renderPillReminderFor('survey_width_percent', '#survey_width_percent', 'Optimal survey container width configured.')
     renderPillReminderFor('custom_css', '#custom_css', 'Modern responsive theme CSS with rounded cards and background styling.')
     renderPillReminderFor('theme', '#theme_parent', 'Standard theme cleared to avoid style collisions with Modern Theme CSS.')
+    renderPillReminderFor('show_required_field_text', 'select[name="show_required_field_text"]', 'Required field marker appearance is managed by the Modern Theme via CSS.')
   }
 
   const removeAllPillReminders = () => {
@@ -785,6 +869,19 @@ html body, body {
     $('.ms-card').removeClass('selected')
     $('.ms-card-btn').text('Select Theme')
 
+    if ($('#ms_corner_radius').length) $('#ms_corner_radius').val('16px')
+    if ($('#ms_bg_style').length) {
+      $('#ms_bg_style').val('default')
+      $('#ms_custom_bg_group').hide()
+      $('#ms_custom_bg_url').val('')
+      $('#ms_bg_upload_status').hide().empty()
+      $('#ms_bg_blur').val('8px')
+    }
+    if ($('#ms_req_style').length) $('#ms_req_style').val('asterisk')
+    if ($('#ms_req_pos').length) $('#ms_req_pos').val('right')
+    syncReqPosVisibility()
+    if ($('#ms_autocomplete_min').length) $('#ms_autocomplete_min').val('5')
+
     syncNativeIframeVisibility()
     applyIframePreviewCSS('')
 
@@ -831,7 +928,7 @@ html body, body {
     }
   }
 
-  // Initialize UI
+  // Initialize UI: detect active theme for card rendering
   detectCurrentTheme()
 
   if (!$('#modern_survey_container').length) {
@@ -849,6 +946,10 @@ html body, body {
     if ($targetRow.length) $targetRow.before(containerHtml)
     else $('#question_by_section-tr').before(containerHtml)
   }
+
+  // Update all option controls (corner radius, background, required marker, autocomplete)
+  // now that the controls exist in the DOM
+  detectCurrentTheme()
 
   if (activeThemeId && themes[activeThemeId]) {
     placeAllPillReminders()
@@ -911,7 +1012,12 @@ html body, body {
     updateIframePreview()
   })
 
-  $(document).on('change', '#ms_corner_radius, #ms_bg_blur, #ms_custom_bg_url, #ms_req_style, #ms_req_pos', () => {
+  $(document).on('change', '#ms_req_style', () => {
+    syncReqPosVisibility()
+    updateIframePreview()
+  })
+
+  $(document).on('change', '#ms_corner_radius, #ms_bg_blur, #ms_custom_bg_url, #ms_req_pos, #ms_autocomplete_min', () => {
     updateIframePreview()
   })
 
@@ -1003,6 +1109,14 @@ html body, body {
   $(document).on('change keyup', watched.join(', '), function () {
     let id = $(this).attr('id')
     let $pill = $(`.ms-pill-reminder[data-setting="${id}"]`)
+    if ($pill.length) {
+      $pill.addClass('user-modified')
+        .html('<i class="fas fa-pen"></i> <span class="pill-label">User Adjusted</span>')
+    }
+  })
+
+  $(document).on('change', 'select[name="show_required_field_text"]', function () {
+    let $pill = $('.ms-pill-reminder[data-setting="show_required_field_text"]')
     if ($pill.length) {
       $pill.addClass('user-modified')
         .html('<i class="fas fa-pen"></i> <span class="pill-label">User Adjusted</span>')
