@@ -2,6 +2,17 @@ $(() => {
     // Only run on survey forms with #questiontable
     if (!$('#questiontable').length) return
 
+    // Bail immediately if Modern Survey Theme is not applied to this survey
+    let hasModernTheme = false
+    $('style').each((i, el) => {
+        let txt = $(el).text()
+        if (txt && txt.includes('Modern Survey Theme:')) {
+            hasModernTheme = true
+            return false
+        }
+    })
+    if (!hasModernTheme) return
+
     const DEFAULT_AUTOCOMPLETE_THRESHOLD = '5'
     const AUTOCOMPLETE_PLACEHOLDER = 'Select an option or type to search...'
 

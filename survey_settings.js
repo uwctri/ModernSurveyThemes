@@ -409,13 +409,62 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
 
   // Helper: Detect active theme from #custom_css
   const detectCurrentTheme = () => {
-    let css = $('#custom_css').val()
-    let match = css.match(/\/\* Modern Survey Theme:\s*([a-zA-Z0-9_-]+)/)
-    if (match && match[1] && themes[match[1]]) {
-      activeThemeId = match[1]
-      selectedThemeId = match[1]
+    let css = $('#custom_css').val() || ''
+    if (!css) {
+      activeThemeId = null
+      return
+    }
+
+    let detectedThemeId = null
+
+    // 1. Try matching "Modern Survey Theme: <id or name>"
+    let match = css.match(/Modern Survey Theme:\s*([^\r\n*]+)/i)
+    if (match && match[1]) {
+      let raw = match[1].trim()
+      let idMatch = raw.match(/^([a-zA-Z0-9_-]+)/)
+      if (idMatch && themes[idMatch[1]]) {
+        detectedThemeId = idMatch[1]
+      } else {
+        let cleanedRaw = raw.replace(/\(.*?\)/g, '').trim().toLowerCase()
+        for (let tid in themes) {
+          let tName = (themes[tid].name || '').toLowerCase()
+          if (tName === cleanedRaw || cleanedRaw.startsWith(tName)) {
+            detectedThemeId = tid
+            break
+          }
+        }
+      }
+    }
+
+    // 2. Fallback: match by unique theme primary color if comment missing
+    if (!detectedThemeId) {
+      for (let tid in themes) {
+        let pColor = themes[tid].colors && themes[tid].colors.primary
+        if (pColor && css.includes(`--ms-primary: ${pColor}`) && css.includes(`--ms-primary-hover:`)) {
+          detectedThemeId = tid
+          break
+        }
+      }
+    }
+
+    if (detectedThemeId && themes[detectedThemeId]) {
+      activeThemeId = detectedThemeId
+      selectedThemeId = detectedThemeId
     } else {
       activeThemeId = null
+    }
+
+    // Restore Corner Radius
+    let radiusMatch = css.match(/--ms-radius:\s*([^;]+);/)
+    if (radiusMatch && radiusMatch[1] && $('#ms_corner_radius').length) {
+      let r = radiusMatch[1].trim()
+      if ($('#ms_corner_radius option[value="' + r + '"]').length) {
+        $('#ms_corner_radius').val(r)
+      } else if (activeThemeId && themes[activeThemeId]) {
+        $('#ms_corner_radius').val(themes[activeThemeId].radius)
+      }
+    } else if (activeThemeId && themes[activeThemeId] && $('#ms_corner_radius').length) {
+      $('#ms_corner_radius').val(themes[activeThemeId].radius)
     }
 
     let bgMatch = css.match(/\/\* Modern Survey Background:\s*([a-zA-Z0-9_-]+)(?:,\s*blur:\s*([0-9]+px))?(?:,\s*url:\s*([^\s*]+))?/)
@@ -537,6 +586,11 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     css = applyBackgroundToCss(css, bgStyle, customBgUrl, blurAmount)
     css += generateRequiredMarkerCSS(reqPos, reqStyle)
 
+    // Cleanly prepend Modern Survey Theme header
+    css = css.replace(/\/\* Modern Survey Theme:[^\r\n*]+\*\/\s*/gi, '')
+    let themeMeta = `/* Modern Survey Theme: ${themeId} (${theme.name}) */\n`
+    css = themeMeta + css
+
     let reqMeta = `/* Modern Survey Required: pos: ${reqPos}, style: ${reqStyle} */\n`
     css = reqMeta + css
 
@@ -642,6 +696,14 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
   if (activeThemeId && themes[activeThemeId]) {
     placeAllPillReminders()
     $('#survey_theme_design').closest('tr').hide()
+
+    setTimeout(() => {
+      let $activeCard = $(`.ms-card[data-theme-id="${activeThemeId}"]`)
+      if ($activeCard.length && $activeCard[0]) {
+        $activeCard[0].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+      }
+      updateBumperStates()
+    }, 150)
   }
 
   const updateBumperStates = () => {

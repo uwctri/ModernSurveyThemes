@@ -7,45 +7,23 @@ use REDCap;
 use Files;
 use FileRepository;
 use Project;
+use finfo;
 
 class ModernSurvey extends AbstractExternalModule
 {
+    private $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    private $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
     public function redcap_every_page_top($project_id)
     {
-        if ($this->isSurveySettingsPage()) {
+        if ($this->isPage('Surveys/edit_info.php') || $this->isPage('Surveys/create_survey.php'))
             $this->injectSurveySettingsAssets($project_id);
-        } else {
-            global $custom_css;
-            if (!empty($custom_css) && strpos($custom_css, 'Modern Survey Theme:') !== false)
-                echo "<style type=\"text/css\">\n/* Preloaded Modern Survey CSS to eliminate FOUC */\n" . strip_tags($custom_css) . "\n</style>\n";
-        }
     }
 
-    public function redcap_survey_page($project_id, $record = null, $instrument = null, $event_id = null, $group_id = null, $survey_hash = null, $response_id = null, $repeat_instance = 1)
+    public function redcap_survey_page()
     {
-        global $Proj;
-        $customCss = '';
-        if (isset($Proj) && isset($Proj->forms[$instrument]['survey_id'])) {
-            $survey_id = $Proj->forms[$instrument]['survey_id'];
-            $customCss = $Proj->surveys[$survey_id]['custom_css'] ?? '';
-        }
-        if (empty($customCss) && !empty($survey_hash)) {
-            $sql = "SELECT s.custom_css FROM redcap_surveys s JOIN redcap_surveys_participants p ON s.survey_id = p.survey_id WHERE p.hash = ?";
-            $res = $this->query($sql, [$survey_hash]);
-            if ($res && ($row = $res->fetch_assoc())) {
-                $customCss = $row['custom_css'] ?? '';
-            }
-        }
-
-        if (!empty($customCss) && strpos($customCss, 'Modern Survey Theme:') !== false) {
-            $clientJsUrl = $this->getUrl('survey_client.js');
-            echo "<script type='text/javascript' src='{$clientJsUrl}'></script>\n";
-        }
-    }
-
-    public function isSurveySettingsPage()
-    {
-        return $this->isPage('Surveys/edit_info.php') || $this->isPage('Surveys/create_survey.php');
+        $clientJsUrl = $this->getUrl('survey_client.js');
+        echo "<script type='text/javascript' src='{$clientJsUrl}'></script>\n";
     }
 
     public function redcap_module_ajax($action, $payload, $project_id)
@@ -61,17 +39,11 @@ class ModernSurvey extends AbstractExternalModule
 
         // Load theme metadata from themes.json and read corresponding standalone CSS files
         $themesJsonPath = $this->getSafePath('themes.json');
-        $themes = [];
-        if (file_exists($themesJsonPath))
-            $themes = json_decode(file_get_contents($themesJsonPath), true);
+        $themes = json_decode(file_get_contents($themesJsonPath), true);
 
         foreach ($themes as $id => &$theme) {
-            $cssFile = isset($theme['file']) ? $this->getSafePath($theme['file']) : '';
-            if ($cssFile && file_exists($cssFile)) {
-                $theme['css'] = file_get_contents($cssFile);
-            } else {
-                $theme['css'] = '';
-            }
+            $cssFile = $this->getSafePath($theme['file']);
+            $theme['css'] = file_get_contents($cssFile);
         }
 
         // Check File Repository availability
@@ -128,8 +100,7 @@ class ModernSurvey extends AbstractExternalModule
         }
 
         $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        if (!in_array($ext, $allowedExts, true)) {
+        if (!in_array($ext, $this->allowedExts, true)) {
             return [
                 'success' => false,
                 'error' => 'Invalid file extension. Please upload a JPG, PNG, WEBP, or GIF image.'
@@ -164,7 +135,8 @@ class ModernSurvey extends AbstractExternalModule
         // Write to temporary file for content inspection and upload
         $tempFile = tempnam(sys_get_temp_dir(), 'ms_bg_');
         if (!$tempFile || file_put_contents($tempFile, $binaryData) === false) {
-            if ($tempFile && file_exists($tempFile)) @unlink($tempFile);
+            if ($tempFile && file_exists($tempFile))
+                @unlink($tempFile);
             return [
                 'success' => false,
                 'error' => 'Failed to write temporary upload file.'
@@ -172,12 +144,10 @@ class ModernSurvey extends AbstractExternalModule
         }
 
         // Validate actual MIME type via finfo
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $detectedMime = finfo_file($finfo, $tempFile);
-        finfo_close($finfo);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $detectedMime = $finfo->file($tempFile);
 
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!in_array($detectedMime, $allowedMimes, true)) {
+        if (!in_array($detectedMime, $this->allowedMimes, true)) {
             @unlink($tempFile);
             return [
                 'success' => false,
@@ -185,16 +155,8 @@ class ModernSurvey extends AbstractExternalModule
             ];
         }
 
-        // Store file in REDCap edocs storage
-        $fileArray = [
-            'name' => $origName,
-            'type' => $detectedMime,
-            'size' => $fileSize,
-            'tmp_name' => $tempFile,
-            'error' => UPLOAD_ERR_OK
-        ];
-
-        $edoc_id = Files::uploadFile($fileArray, $project_id);
+        // Store file in REDCap edocs storage via REDCap::storeFile
+        $edoc_id = REDCap::storeFile($tempFile, $project_id, $origName);
         if (file_exists($tempFile))
             @unlink($tempFile);
 
