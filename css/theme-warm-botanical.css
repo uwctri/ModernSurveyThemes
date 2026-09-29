@@ -544,6 +544,18 @@ body {
   box-shadow: 0 0 0 3.5px rgba(46, 125, 50, 0.22) !important;
 }
 
+#questiontable select:not(.rc-autocomplete).rc-autocomplete,
+#questiontable select:not(.rc-autocomplete).x-form-field.rc-autocomplete,
+#questiontable select:not(.rc-autocomplete).x-form-text.rc-autocomplete,
+select.rc-autocomplete {
+  display: none !important;
+}
+
+td.data:has(select.rc-autocomplete) span[data-kind='field-value'] > span::after,
+td.data:has(select.rc-autocomplete) span::after {
+  display: none !important;
+}
+
 /* Hide original select when autocomplete is active */
 #questiontable select.rc-autocomplete,
 #questiontable select.x-form-field.rc-autocomplete,
@@ -598,11 +610,14 @@ td.data:has(select.rc-autocomplete) span::after {
 /* Autocomplete Text Input */
 #questiontable input.rc-autocomplete,
 #questiontable input.ui-autocomplete-input,
+form#form input.rc-autocomplete,
+form#form input.ui-autocomplete-input,
 input.rc-autocomplete,
 input[id^="rc-ac-input_"] {
   display: block !important;
   width: auto !important;
   min-width: 0 !important;
+  max-width: none !important;
   flex: 1 1 auto !important;
   height: 100% !important;
   min-height: 100% !important;
@@ -658,6 +673,8 @@ button.rc-autocomplete.ui-button {
   border: none !important;
   border-left: 1.5px solid var(--ms-input-border, #cbd5e1) !important;
   border-radius: 0 !important;
+  border-top-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+  border-bottom-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
   background: transparent !important;
   background-color: transparent !important;
   box-shadow: none !important;
@@ -684,6 +701,8 @@ button.rc-autocomplete.ui-state-hover {
   background-color: var(--ms-focus-ring, rgba(59, 130, 246, 0.12)) !important;
   border-color: var(--ms-input-border, #cbd5e1) !important;
   border-left-color: var(--ms-primary, #3b82f6) !important;
+  border-top-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+  border-bottom-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
   color: var(--ms-primary-hover, #2563eb) !important;
   outline: none !important;
   box-shadow: none !important;
@@ -1110,9 +1129,15 @@ div.enhancedchoice {
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
 }
 
 div.enhancedchoice label {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  line-height: 1.4 !important;
   border-radius: 10px !important;
   border: 1.5px solid #d7d0c3 !important;
   background-color: #fefcf9 !important;

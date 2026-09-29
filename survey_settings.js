@@ -5,7 +5,17 @@ $(() => {
   if (!$('#custom_css').length) return
 
   let activeThemeId = null
-  let selectedThemeId = 'modern_slate'
+  let selectedThemeId = null
+
+  const syncNativeIframeVisibility = () => {
+    let isModernSelected = !!(activeThemeId || selectedThemeId)
+    $('body').toggleClass('ms-theme-active', isModernSelected)
+    if (isModernSelected) {
+      $('#survey_theme_design').closest('tr').hide()
+    } else {
+      $('#survey_theme_design').closest('tr').show()
+    }
+  }
 
   const escapeHtml = (str) => {
     if (!str) return ''
@@ -173,76 +183,166 @@ $(() => {
 	  <span class="pill-label">Set by Theme</span>
 	</span>`
 
-  const previewModalTemplate = (theme, css) => `
-	<div id="ms_preview_modal_content" style="padding: 10px; max-height: 520px; overflow-y: auto;">
-	  <div id="pagecontainer" style="max-width: 740px; margin: 0 auto; padding: 10px 0;">
-		<div id="container">
-		  <div id="surveytitlelogo">
-			<div id="surveytitle">${escapeHtml(theme.name)} — Theme Preview</div>
-		  </div>
-		  <div id="surveyinstructions">
-			<p>This live preview showcases rounded corners, input styling, enhanced choices, matrix rows, and sliders in the <strong>${escapeHtml(theme.name)}</strong> theme.</p>
-		  </div>
-		  <table id="questiontable" cellpadding="0" cellspacing="0">
-			<tbody>
-			  <tr class="header">
-				<td colspan="2" class="header"><i class="fas fa-user-edit"></i> Section 1: Standard & Enhanced Fields</td>
-			  </tr>
-			  <tr>
-				<td class="labelrc" style="width: 45%;"><span class="questionnum">1</span> <div data-kind="field-label" style="display:inline-flex; align-items:baseline; gap:4px;"><span>Participant Full Name</span> <div class="requiredlabel" aria-label="Required field">* must provide value</div></div></td>
-				<td class="data"><input type="text" value="Jane Doe" style="width: 85%;"></td>
-			  </tr>
-			  <tr>
-				<td class="labelrc"><span class="questionnum">2</span> Preferred Contact Method (Enhanced Choices)</td>
-				<td class="data">
-				  <div class="enhancedchoice_wrapper">
-					<div class="enhancedchoice"><label class="selectedradio"><span class="ec"><i class="fas fa-check-circle"></i> Email</span></label></div>
-					<div class="enhancedchoice"><label><span class="ec">Phone Call</span></label></div>
-					<div class="enhancedchoice"><label><span class="ec">SMS Text</span></label></div>
-				  </div>
-				</td>
-			  </tr>
-			  <tr>
-				<td class="labelrc"><span class="questionnum">3</span> Primary Study Department</td>
-				<td class="data">
-				  <select style="width: 85%;">
-					<option>General Medicine & Oncology</option>
-					<option>Cardiovascular Research</option>
-					<option>Population Health</option>
-				  </select>
-				</td>
-			  </tr>
-			  <tr>
-				<td class="labelrc"><span class="questionnum">4</span> Research Notes & Comments</td>
-				<td class="data"><textarea style="width: 90%; height: 60px;">Modern, clean notes input with subtle rounded corners and focus elevation.</textarea></td>
-			  </tr>
-			  <tr class="header">
-				<td colspan="2" class="header"><i class="fas fa-sliders-h"></i> Section 2: Matrix & Visual Analog Scale</td>
-			  </tr>
-			  <tr>
-				<td class="labelrc"><span class="questionnum">5</span> Satisfaction Rating (0 - 100)</td>
-				<td class="data" style="padding-top:20px; padding-bottom:20px;">
-				  <div class="slider ui-widget-content" style="position:relative; width: 85%;">
-					<div class="ui-state-default" style="position:absolute; left: 75%;"></div>
-				  </div>
-				  <div class="sliderlabels" style="display:flex; justify-content:space-between; width:85%; margin-top:10px;">
-					<span>Poor (0)</span><span>Neutral (50)</span><span>Excellent (100)</span>
-				  </div>
-				</td>
-			  </tr>
-			  <tr class="surveysubmit">
-				<td colspan="2">
-				  <button type="button" name="submit-btn-saveprevpage" style="margin-right:10px;">Previous Page</button>
-				  <button type="button" name="submit-btn-saverecord">Submit Response</button>
-				</td>
-			  </tr>
-			</tbody>
-		  </table>
-		  <div id="footer" style="text-align: center !important; width: 100% !important; margin: 0 auto !important; padding: 18px 0 10px !important;">Powered by REDCap & Modern Survey Themes</div>
-		</div>
-	  </div>
-	  <style>${css}</style>
+  const previewModalContainerTemplate = () => `
+	<div id="ms_preview_modal_container" style="width: 100%; height: 560px; padding: 0; margin: 0; overflow: hidden; background: #ffffff;">
+	  <iframe id="ms_preview_modal_iframe" style="width: 100%; height: 100%; border: none; display: block;" frameborder="0"></iframe>
 	</div>`
+
+  const previewModalDocumentTemplate = (theme, css, linkTags) => `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(theme.name)} Preview</title>
+  <base href="${escapeHtml(window.location.origin + window.location.pathname)}">
+  ${linkTags || ''}
+  <style>
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-height: 100% !important;
+  background-color: var(--ms-bg-page, #ffffff);
+  font-family: var(--ms-font-family, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif);
+}
+#pagecontainer {
+  max-width: 740px !important;
+  margin: 20px auto !important;
+  padding: 10px 16px !important;
+  box-sizing: border-box !important;
+}
+#footer {
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 18px 0 10px !important;
+  display: block !important;
+}
+
+/* Enhanced Choice container & non-overlapping layout */
+.enhancedchoice_wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-width: 380px !important;
+  margin-top: 4px !important;
+}
+div.enhancedchoice {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+div.enhancedchoice label {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 10px 16px !important;
+  cursor: pointer !important;
+  line-height: 1.4 !important;
+}
+div.enhancedchoice label span.ec {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+/* Crisp self-contained section header icons */
+.ms-sec-icon {
+  display: inline-block !important;
+  vertical-align: -2.5px !important;
+  margin-right: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+${css}
+  </style>
+</head>
+<body>
+  <div id="pagecontainer">
+    <div id="container">
+      <div id="surveytitlelogo">
+        <div id="surveytitle">${escapeHtml(theme.name)} — Theme Preview</div>
+      </div>
+      <div id="surveyinstructions">
+        <p>This live preview showcases rounded corners, input styling, enhanced choices, matrix rows, and sliders in the <strong>${escapeHtml(theme.name)}</strong> theme.</p>
+      </div>
+      <table id="questiontable" cellpadding="0" cellspacing="0">
+        <tbody>
+          <tr class="header">
+            <td colspan="2" class="header">
+              <svg class="ms-sec-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Section 1: Standard &amp; Enhanced Fields</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="labelrc" style="width: 45%;"><span class="questionnum">1</span> <div data-kind="field-label" style="display:inline-flex; align-items:baseline; gap:4px;"><span>Participant Full Name</span> <div class="requiredlabel" aria-label="Required field">* must provide value</div></div></td>
+            <td class="data"><input type="text" value="Jane Doe" style="width: 85%;"></td>
+          </tr>
+          <tr>
+            <td class="labelrc"><span class="questionnum">2</span> Preferred Contact Method (Enhanced Choices)</td>
+            <td class="data">
+              <div class="enhancedchoice_wrapper">
+                <div class="enhancedchoice">
+                  <label class="selectedradio">
+                    <span class="ec">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="display:inline-block; vertical-align:-1px; margin-right:5px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                      Email
+                    </span>
+                  </label>
+                </div>
+                <div class="enhancedchoice"><label><span class="ec">Phone Call</span></label></div>
+                <div class="enhancedchoice"><label><span class="ec">SMS Text</span></label></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="labelrc"><span class="questionnum">3</span> Primary Study Department</td>
+            <td class="data">
+              <select style="width: 85%;">
+                <option>General Medicine & Oncology</option>
+                <option>Cardiovascular Research</option>
+                <option>Population Health</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="labelrc"><span class="questionnum">4</span> Research Notes & Comments</td>
+            <td class="data"><textarea style="width: 90%; height: 60px;">Modern, clean notes input with subtle rounded corners and focus elevation.</textarea></td>
+          </tr>
+          <tr class="header">
+            <td colspan="2" class="header">
+              <svg class="ms-sec-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              <span>Section 2: Matrix &amp; Visual Analog Scale</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="labelrc"><span class="questionnum">5</span> Satisfaction Rating (0 - 100)</td>
+            <td class="data" style="padding-top:20px; padding-bottom:20px;">
+              <div class="slider ui-widget-content" style="position:relative; width: 85%;">
+                <div class="ui-state-default" style="position:absolute; left: 75%;"></div>
+              </div>
+              <div class="sliderlabels" style="display:flex; justify-content:space-between; width:85%; margin-top:10px;">
+                <span>Poor (0)</span><span>Neutral (50)</span><span>Excellent (100)</span>
+              </div>
+            </td>
+          </tr>
+          <tr class="surveysubmit">
+            <td colspan="2">
+              <button type="button" name="submit-btn-saveprevpage" style="margin-right:10px;">Previous Page</button>
+              <button type="button" name="submit-btn-saverecord">Submit Response</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="footer">Powered by REDCap & Modern Survey Themes</div>
+    </div>
+  </div>
+</body>
+</html>`
 
   const toastTemplate = (msg) => `<div class="ms-toast"><i class="fas fa-check-circle"></i> ${escapeHtml(msg)}</div>`
 
@@ -257,12 +357,20 @@ $(() => {
   }
 
   const applyBackgroundToCss = (css, bgStyle, customBgUrl, blurAmount) => {
-    if (bgPresets[bgStyle]) return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1${bgPresets[bgStyle]}`)
+    let cleanCss = css.replace(/\/\* MS_BG_START \*\/[\s\S]*?\/\* MS_BG_END \*\/\s*/g, '')
+    if (!bgStyle || bgStyle === 'default') return cleanCss
+
+    if (bgPresets[bgStyle]) {
+      let rule = bgPresets[bgStyle]
+      let bgBlock = `\n/* MS_BG_START */\nbody, html {\n  ${rule}\n}\n/* MS_BG_END */\n`
+      return cleanCss + bgBlock
+    }
+
     if (bgStyle === 'custom' && customBgUrl) {
       let blur = blurAmount || '0px'
       if (blur !== '0px' && blur !== '0') {
-        let blurredRule = `
-body {
+        let blurredRule = `\n/* MS_BG_START */
+body, html {
   background-color: transparent !important;
   background-image: none !important;
 }
@@ -285,35 +393,15 @@ body::before {
   z-index: -1 !important;
   pointer-events: none !important;
 }
-#ms_preview_modal_content {
-  position: relative !important;
-  overflow: hidden !important;
-}
-#ms_preview_modal_content::before {
-  content: "" !important;
-  position: absolute !important;
-  top: -20px !important;
-  left: -20px !important;
-  right: -20px !important;
-  bottom: -20px !important;
-  background-image: url("${customBgUrl}") !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-  background-position: center !important;
-  filter: blur(${blur}) !important;
-  -webkit-filter: blur(${blur}) !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-}
-#ms_preview_modal_content #pagecontainer {
-  position: relative !important;
-  z-index: 1 !important;
-}`
-        return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1background-image: none !important;`) + blurredRule
+/* MS_BG_END */\n`
+        return cleanCss + blurredRule
+      } else {
+        let customRule = `background-image: url("${customBgUrl}") !important; background-repeat: no-repeat !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important;`
+        let bgBlock = `\n/* MS_BG_START */\nbody, html {\n  ${customRule}\n}\n/* MS_BG_END */\n`
+        return cleanCss + bgBlock
       }
-      return css.replace(/(body\s*\{[\s\S]*?)background-image:[^;]+;/, `$1background-image: url("${customBgUrl}") !important; background-repeat: no-repeat !important; background-size: cover !important; background-position: center !important; background-attachment: fixed !important;`)
     }
-    return css
+    return cleanCss
   }
 
   const generateRequiredMarkerCSS = (position, style) => {
@@ -412,6 +500,8 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     let css = $('#custom_css').val() || ''
     if (!css) {
       activeThemeId = null
+      selectedThemeId = null
+      syncNativeIframeVisibility()
       return
     }
 
@@ -452,7 +542,10 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
       selectedThemeId = detectedThemeId
     } else {
       activeThemeId = null
+      selectedThemeId = null
     }
+
+    syncNativeIframeVisibility()
 
     // Restore Corner Radius
     let radiusMatch = css.match(/--ms-radius:\s*([^;]+);/)
@@ -506,6 +599,28 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     }
   }
 
+  // Helper: Builds preview CSS using currently selected or active theme and options
+  const buildCurrentPreviewCSS = (themeId) => {
+    let tid = themeId || selectedThemeId || activeThemeId
+    if (!tid || !themes[tid]) return ''
+
+    let theme = themes[tid]
+    let radius = $('#ms_corner_radius').val() || theme.radius || '10px'
+    let bgStyle = $('#ms_bg_style').val() || 'default'
+    let customBgUrl = (bgStyle === 'custom') ? $('#ms_custom_bg_url').val() : ''
+    let blurAmount = (bgStyle === 'custom') ? $('#ms_bg_blur').val() : '0px'
+    let reqStyle = $('#ms_req_style').val() || 'asterisk'
+    let reqPos = $('#ms_req_pos').val() || 'right'
+
+    let css = theme.css
+    if (radius !== theme.radius) {
+      css = css.replace(/--ms-radius:\s*[^;]+;/g, `--ms-radius: ${radius};`)
+    }
+    css = applyBackgroundToCss(css, bgStyle, customBgUrl, blurAmount)
+    css += generateRequiredMarkerCSS(reqPos, reqStyle)
+    return css
+  }
+
   // Helper: Injects custom CSS into REDCap's native preview iframe
   const applyIframePreviewCSS = (css) => {
     try {
@@ -513,19 +628,40 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
       if (!$iframe.length) return
 
       let iframeDoc = $iframe[0].contentDocument || $iframe[0].contentWindow.document
-      if (!iframeDoc || !iframeDoc.head) return
+      if (!iframeDoc) return
 
-      let $head = $(iframeDoc.head)
-      let $style = $head.find('#ms_preview_injected_css')
+      let target = iframeDoc.body || iframeDoc.head
+      if (!target) return
 
+      let $style = $(iframeDoc).find('#ms_preview_injected_css')
       if (!$style.length) {
         $style = $('<style id="ms_preview_injected_css" type="text/css"></style>')
-        $head.append($style)
+        $(target).append($style)
       }
 
-      $style.html(css)
+      // Add iframe-specific overrides to beat REDCap's inline body style with higher specificity
+      let iframeOverrides = `
+html body, body {
+  width: 100% !important;
+  min-height: 100% !important;
+  box-sizing: border-box !important;
+  background-color: var(--ms-bg-page, #ffffff) !important;
+}
+#questiontable {
+  max-width: 95% !important;
+  margin: 0 auto !important;
+}
+`
+      $style.html(css ? (css + iframeOverrides) : '')
     } catch (err) {
       // Frame not accessible or cross-origin
+    }
+  }
+
+  const updateIframePreview = () => {
+    let css = buildCurrentPreviewCSS()
+    if (css) {
+      applyIframePreviewCSS(css)
     }
   }
 
@@ -628,8 +764,9 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     $('.ms-card').removeClass('selected')
     $(`.ms-card[data-theme-id="${themeId}"]`).addClass('selected').find('.ms-card-btn').text('✓ Currently Active')
 
-    // 5. Hide native preview iframe row
-    $('#survey_theme_design').closest('tr').hide()
+    // 5. Update iframe preview
+    updateIframePreview()
+    syncNativeIframeVisibility()
 
     showToast(`"${theme.name}" applied! Display options updated with pill reminders.`)
   }
@@ -640,34 +777,51 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
 
     $('#custom_css').val('')
     activeThemeId = null
+    selectedThemeId = null
     removeAllPillReminders()
 
     $('#ms_status_wrapper').html(statusBadgeTemplate(null))
     $('.ms-card').removeClass('selected')
     $('.ms-card-btn').text('Select Theme')
 
-    $('#survey_theme_design').closest('tr').hide()
+    syncNativeIframeVisibility()
+    applyIframePreviewCSS('')
 
     showToast('Theme cleared. Default settings restored.')
   }
 
   // Helper: Open preview modal
   const openPreviewModal = (themeId) => {
-    let theme = themes[themeId]
-    let radius = $('#ms_corner_radius').val()
-    let bgStyle = $('#ms_bg_style').val()
-    let customBgUrl = (bgStyle === 'custom') ? $('#ms_custom_bg_url').val() : ''
-    let blurAmount = (bgStyle === 'custom') ? $('#ms_bg_blur').val() : '0px'
-    let reqStyle = $('#ms_req_style').val() || 'asterisk'
-    let reqPos = $('#ms_req_pos').val() || 'right'
+    let tid = themeId || selectedThemeId || activeThemeId || 'modern_slate'
+    let theme = themes[tid]
+    if (!theme) return
+    let css = buildCurrentPreviewCSS(tid)
 
-    let css = theme.css.replace(/--ms-radius:\s*[^;]+;/g, `--ms-radius: ${radius};`)
-    css = applyBackgroundToCss(css, bgStyle, customBgUrl, blurAmount)
-    css += generateRequiredMarkerCSS(reqPos, reqStyle)
+    let linkTags = ''
+    try {
+      linkTags = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+        .filter(l => l.href && (l.href.includes('font-awesome') || l.href.includes('fontawesome')))
+        .map(l => `<link rel="stylesheet" href="${escapeHtml(l.href)}">`)
+        .join('\n')
+    } catch (e) {}
 
-    let modalHtml = previewModalTemplate(theme, css)
+    let modalHtml = previewModalContainerTemplate()
     if (typeof simpleDialog === 'function') {
-      simpleDialog(modalHtml, `Theme Preview: ${theme.name}`, 'ms_preview_dialog', 820)
+      simpleDialog(modalHtml, `Theme Preview: ${theme.name}`, 'ms_preview_dialog', 840)
+
+      let populateIframe = () => {
+        let iframe = document.getElementById('ms_preview_modal_iframe')
+        if (iframe) {
+          let doc = iframe.contentDocument || iframe.contentWindow.document
+          if (doc) {
+            doc.open()
+            doc.write(previewModalDocumentTemplate(theme, css, linkTags))
+            doc.close()
+          }
+        }
+      }
+      populateIframe()
+      setTimeout(populateIframe, 60)
     } else {
       alert(`Preview for ${theme.name} ready.`)
     }
@@ -675,7 +829,6 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
 
   // Initialize UI
   detectCurrentTheme()
-  $('#survey_theme_design').closest('tr').hide()
 
   if (!$('#modern_survey_container').length) {
     let cardsHtml = Object.keys(themes).map((id) => {
@@ -695,7 +848,6 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
 
   if (activeThemeId && themes[activeThemeId]) {
     placeAllPillReminders()
-    $('#survey_theme_design').closest('tr').hide()
 
     setTimeout(() => {
       let $activeCard = $(`.ms-card[data-theme-id="${activeThemeId}"]`)
@@ -705,6 +857,11 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
       updateBumperStates()
     }, 150)
   }
+
+  setTimeout(() => {
+    syncNativeIframeVisibility()
+    updateIframePreview()
+  }, 200)
 
   const updateBumperStates = () => {
     let el = $('#ms_cards_scroll')[0]
@@ -740,11 +897,18 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     else $(this).find('.ms-card-btn').text('✓ Selected')
 
     if ($(this)[0]) $(this)[0].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    syncNativeIframeVisibility()
+    updateIframePreview()
   })
 
   $(document).on('change', '#ms_bg_style', function () {
     if ($(this).val() === 'custom') $('#ms_custom_bg_group').show()
     else $('#ms_custom_bg_group').hide()
+    updateIframePreview()
+  })
+
+  $(document).on('change', '#ms_corner_radius, #ms_bg_blur, #ms_custom_bg_url, #ms_req_style, #ms_req_pos', () => {
+    updateIframePreview()
   })
 
   $(document).on('click', '#ms_btn_upload_bg', (e) => {
@@ -841,8 +1005,9 @@ td.labelrc .requiredlabel, td.labelrc div.requiredlabel, td.labelrc span.require
     }
   })
 
-  // Ensure native preview iframe row stays hidden if reloaded
+  // Keep native preview iframe visibility and styling synced whenever it loads
   $('#survey_theme_design').on('load', () => {
-    $('#survey_theme_design').closest('tr').hide()
+    syncNativeIframeVisibility()
+    updateIframePreview()
   })
 })

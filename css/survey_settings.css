@@ -585,10 +585,46 @@
     100% { transform: translateY(0); opacity: 1; }
 }
 
-/* Hide native REDCap theme preview iframe and its row */
-#survey_theme_design,
-tr:has(#survey_theme_design) {
+/* Style native REDCap theme preview iframe */
+#survey_theme_design {
+    border-radius: 8px !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Hide native REDCap theme preview row when modern theme is active or selected */
+.ms-theme-active #survey_theme_design,
+.ms-theme-active tr:has(#survey_theme_design) {
     display: none !important;
+}
+
+/* Scoped styles for the Preview Modal dialog & isolated iframe */
+.ui-dialog:has(#ms_preview_dialog) {
+    max-width: 94vw !important;
+    width: 860px !important;
+}
+
+#ms_preview_dialog {
+    padding: 0 !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+#ms_preview_modal_container {
+    width: 100% !important;
+    height: 560px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: #ffffff;
+}
+
+#ms_preview_modal_iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    display: block !important;
 }
 
 /* Ensure footer is centered in preview popup */

@@ -25,6 +25,24 @@ $(() => {
             width: 100% !important;
             max-width: 100% !important;
         }
+        #questiontable input.rc-autocomplete,
+        form#form input.rc-autocomplete,
+        form#form input.ui-autocomplete-input,
+        input.rc-autocomplete {
+            max-width: none !important;
+        }
+        #questiontable button.rc-autocomplete,
+        button.rc-autocomplete {
+            border-top-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+            border-bottom-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+        }
+        #questiontable button.rc-autocomplete:hover,
+        #questiontable button.rc-autocomplete.ui-state-hover,
+        button.rc-autocomplete:hover,
+        button.rc-autocomplete.ui-state-hover {
+            border-top-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+            border-bottom-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+        }
     `
 
     // Autocomplete Wrapper HTML/CSS Template
