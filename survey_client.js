@@ -13,6 +13,15 @@ $(() => {
     })
     if (!hasModernTheme) return
 
+    // Reveal container cleanly once theme is verified
+    $('#pagecontainer').addClass('modern-survey-ready')
+    $('body').addClass('modern-survey-ready')
+
+    // Align visible right vertical radio buttons and checkboxes flush with other fields
+    $('#questiontable .choicevert:not(.hidden)').css({ 'margin-left': '0', 'text-indent': '0' })
+    $('#questiontable .choicevert.hidden, #questiontable .choicehoriz.hidden').hide()
+    $('#questiontable div.enhancedchoice label').css({ 'margin': '0' })
+
     const DEFAULT_AUTOCOMPLETE_THRESHOLD = '5'
     const AUTOCOMPLETE_PLACEHOLDER = 'Select an option or type to search...'
 

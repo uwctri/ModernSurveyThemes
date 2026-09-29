@@ -241,6 +241,7 @@ div.enhancedchoice label {
   width: 100% !important;
   margin: 0 !important;
   padding: 10px 16px !important;
+  border-radius: var(--ms-radius, 16px) !important;
   cursor: pointer !important;
   line-height: 1.4 !important;
 }
@@ -800,10 +801,13 @@ html body, body {
     let linkTags = ''
     try {
       linkTags = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
-        .filter(l => l.href && (l.href.includes('font-awesome') || l.href.includes('fontawesome')))
+        .filter(l => l.href && (l.href.includes('font-awesome') || l.href.includes('fontawesome') || l.href.includes('fonts.css')))
         .map(l => `<link rel="stylesheet" href="${escapeHtml(l.href)}">`)
         .join('\n')
     } catch (e) {}
+    if (moduleObj && moduleObj.fontsCssUrl && !linkTags.includes('fonts.css')) {
+      linkTags += `\n<link rel="stylesheet" href="${escapeHtml(moduleObj.fontsCssUrl)}">`
+    }
 
     let modalHtml = previewModalContainerTemplate()
     if (typeof simpleDialog === 'function') {

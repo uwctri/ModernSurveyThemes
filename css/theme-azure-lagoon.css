@@ -5,7 +5,7 @@
  * and elegant slate navy typography on crisp white cards.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('../fonts/fonts.css');
 
 :root {
   --ms-primary: #0093d4;
@@ -46,7 +46,10 @@ body, html {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Anti-FOUC Reveal: smoothly reveal pagecontainer once theme stylesheet is parsed */
+html body #pagecontainer,
 #pagecontainer {
+  visibility: visible !important;
   padding: 35px 15px 45px !important;
   margin: 0 auto !important;
 }
@@ -1108,21 +1111,23 @@ span.df {
 
 /* Enhanced Choice cards */
 div.enhancedchoice {
-  margin: 4px 6px 4px 0 !important;
+  margin: 6px 0 !important;
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
   display: block !important;
   box-sizing: border-box !important;
+  width: 100% !important;
 }
 
 div.enhancedchoice label {
   display: block !important;
   box-sizing: border-box !important;
   width: 100% !important;
+  margin: 0 !important;
   line-height: 1.4 !important;
-  border-radius: 10px !important;
+  border-radius: var(--ms-radius, 16px) !important;
   border: 1.5px solid #c2d9ea !important;
   background-color: #ffffff !important;
   color: #456984 !important;
@@ -1169,12 +1174,72 @@ div.enhancedchoice.ui-state-active label * {
   color: #ffffff !important;
 }
 
-label.choicevert, label.choicehoriz {
+#questiontable .choicevert:not(.hidden):not([style*="display: none"]):not([style*="display:none"]),
+.choicevert:not(.hidden):not([style*="display: none"]):not([style*="display:none"]) {
+  margin-left: 0 !important;
+  text-indent: 0 !important;
+  padding-left: 0 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+}
+#questiontable .choicevert input[type="radio"],
+#questiontable .choicevert input[type="checkbox"],
+.choicevert input[type="radio"],
+.choicevert input[type="checkbox"] {
+  margin: 3px 0 0 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+#questiontable .choicevert label,
+.choicevert label,
+#questiontable .choicevert label.mc,
+.choicevert label.mc,
+label.choicevert {
+  text-indent: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   font-size: 14px !important;
-  font-weight: normal !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
   color: #456984 !important;
-  cursor: pointer;
-  margin-right: 12px;
+  cursor: pointer !important;
+}
+#questiontable .choicehoriz:not(.hidden):not([style*="display: none"]):not([style*="display:none"]),
+.choicehoriz:not(.hidden):not([style*="display: none"]):not([style*="display:none"]) {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-left: 0 !important;
+  margin-right: 16px !important;
+  margin-top: 4px !important;
+  margin-bottom: 4px !important;
+  text-indent: 0 !important;
+  padding-left: 0 !important;
+}
+#questiontable .choicehoriz input[type="radio"],
+#questiontable .choicehoriz input[type="checkbox"],
+.choicehoriz input[type="radio"],
+.choicehoriz input[type="checkbox"] {
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+#questiontable .choicehoriz label,
+.choicehoriz label,
+#questiontable .choicehoriz label.mc,
+.choicehoriz label.mc,
+label.choicehoriz {
+  text-indent: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  color: #456984 !important;
+  cursor: pointer !important;
 }
 
 /* Matrix Styling */
@@ -1266,11 +1331,34 @@ input.calc {
 }
 
 /* Buttons: Submit, Next, Save */
-#questiontable tr.surveysubmit td {
+#questiontable tr.surveysubmit > td,
+#questiontable tr:has(button[name^="submit-btn"]) > td {
   background: #ffffff !important;
   border-top: 1px solid #eef2f6 !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
   padding: 24px 20px !important;
   text-align: center !important;
+}
+#questiontable tr.surveysubmit table,
+#questiontable tr.surveysubmit table tr,
+#questiontable tr.surveysubmit table td,
+#questiontable tr:has(button[name^="submit-btn"]) table,
+#questiontable tr:has(button[name^="submit-btn"]) table tr,
+#questiontable tr:has(button[name^="submit-btn"]) table td {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  box-shadow: none !important;
+}
+#questiontable > tbody > tr:last-child > td {
+  border-bottom: none !important;
 }
 
 button[name="submit-btn-saverecord"],
@@ -1431,4 +1519,21 @@ button[name="submit-btn-savereturnlater"]:focus,
     width: 100% !important;
     box-sizing: border-box !important;
   }
+}
+
+/* Explicitly ensure REDCap hidden choices remain completely hidden when enhanced choices are enabled */
+#questiontable .choicevert.hidden,
+#questiontable .choicehoriz.hidden,
+.choicevert.hidden,
+.choicehoriz.hidden,
+.hidden {
+  display: none !important;
+}
+
+.enhancedchoice_wrapper,
+div.enhancedchoice_wrapper {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }

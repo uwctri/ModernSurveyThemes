@@ -20,6 +20,39 @@ class ModernSurvey extends AbstractExternalModule
             $this->injectSurveySettingsAssets($project_id);
     }
 
+    public function redcap_survey_page_top($project_id, $record, $instrument)
+    {
+        $result = $this->query(
+            "SELECT custom_css FROM redcap_surveys WHERE project_id = ? AND form_name = ? LIMIT 1",
+            [$project_id, $instrument]
+        );
+        $row = $result ? $result->fetch_assoc() : null;
+        $customCss = $row['custom_css'] ?? '';
+
+        if (strpos($customCss, 'Modern Survey') === false)
+            return;
+
+        $fontsCssUrl = $this->getUrl('fonts/fonts.css');
+        $criticalCss = '';
+        if (preg_match('/(:root\s*\{[^}]+\})/s', $customCss, $rootMatches))
+            $criticalCss .= $rootMatches[1] . "\n";
+        if (preg_match('/(body\s*\{[^}]+\})/s', $customCss, $bodyMatches))
+            $criticalCss .= $bodyMatches[1] . "\n";
+
+        echo "<link rel='stylesheet' type='text/css' href='{$fontsCssUrl}'>\n";
+        echo "<style id='ms-fouc-guard'>
+                {$criticalCss}
+                html body #pagecontainer {
+                    opacity: 0;
+                    transition: opacity 0.75s linear;
+                }
+                body.modern-survey-ready #pagecontainer,
+                #pagecontainer.modern-survey-ready {
+                    opacity: 1;
+                }
+              </style>\n";
+    }
+
     public function redcap_survey_page()
     {
         $clientJsUrl = $this->getUrl('survey_client.js');
@@ -41,9 +74,12 @@ class ModernSurvey extends AbstractExternalModule
         $themesJsonPath = $this->getSafePath('themes.json');
         $themes = json_decode(file_get_contents($themesJsonPath), true);
 
+        $fontsCssUrl = $this->getUrl('fonts/fonts.css');
+
         foreach ($themes as $id => &$theme) {
             $cssFile = $this->getSafePath($theme['file']);
-            $theme['css'] = file_get_contents($cssFile);
+            $cssContent = file_get_contents($cssFile);
+            $theme['css'] = str_replace('../fonts/fonts.css', $fontsCssUrl, $cssContent);
         }
 
         // Check File Repository availability
@@ -60,9 +96,11 @@ class ModernSurvey extends AbstractExternalModule
         $cssUrl = $this->getUrl('css/survey_settings.css');
         $jsUrl = $this->getUrl('survey_settings.js');
 
+        echo "<link rel='stylesheet' type='text/css' href='{$fontsCssUrl}'>\n";
         echo "<link rel='stylesheet' type='text/css' href='{$cssUrl}'>\n";
         echo "<script type='text/javascript'>\n";
         echo "  {$jsObject}.themes = {$jsonData};\n";
+        echo "  {$jsObject}.fontsCssUrl = '{$fontsCssUrl}';\n";
         echo "  {$jsObject}.fileRepoEnabled = " . ($fileRepoEnabled ? 'true' : 'false') . ";\n";
         echo "</script>\n";
         echo "<script type='text/javascript' src='{$jsUrl}'></script>\n";
@@ -124,7 +162,7 @@ class ModernSurvey extends AbstractExternalModule
         }
 
         $fileSize = strlen($binaryData);
-        $maxBytes = function_exists('maxUploadSizeFileRepository') ? (maxUploadSizeFileRepository() * 1024 * 1024) : (32 * 1024 * 1024);
+        $maxBytes = maxUploadSizeFileRepository() * 1024 * 1024; // Convert MB to bytes
         if ($fileSize > $maxBytes) {
             return [
                 'success' => false,
