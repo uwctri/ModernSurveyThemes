@@ -107,6 +107,24 @@ body {
   background: #ffffff !important;
 }
 
+.survey-titlebar__right button,
+.survey-titlebar__right button:hover,
+.survey-titlebar__right button:focus,
+.survey-titlebar__right button:active,
+.survey-titlebar__right a,
+.survey-titlebar__right a:hover,
+.survey-titlebar__right a:focus,
+.survey-titlebar__right a:active,
+.survey-titlebar__right .btn-link,
+.survey-titlebar__right .btn-link:hover,
+.survey-titlebar__right .btn-link:focus,
+.survey-titlebar__right .increaseFont,
+.survey-titlebar__right .decreaseFont,
+.survey-titlebar__right .increaseFont *,
+.survey-titlebar__right .decreaseFont * {
+  text-decoration: none !important;
+}
+
 .survey-titlebar__right .font-resize-header {
   display: inline-flex !important;
   align-items: baseline !important;
@@ -122,9 +140,45 @@ body {
   line-height: 1 !important;
 }
 
+.survey-titlebar__right button,
+.survey-titlebar__right button:hover,
+.survey-titlebar__right button:focus,
+.survey-titlebar__right button:active,
+.survey-titlebar__right a,
+.survey-titlebar__right a:hover,
+.survey-titlebar__right a:focus,
+.survey-titlebar__right a:active,
+.survey-titlebar__right .btn-link,
+.survey-titlebar__right .btn-link:hover,
+.survey-titlebar__right .btn-link:focus,
+.survey-titlebar__right .increaseFont,
+.survey-titlebar__right .decreaseFont,
+.survey-titlebar__right .increaseFont *,
+.survey-titlebar__right .decreaseFont * {
+  text-decoration: none !important;
+}
+
 .survey-titlebar__right .font-resize-header span {
   font-family: system-ui, -apple-system, sans-serif !important;
   line-height: 1 !important;
+}
+
+.survey-titlebar__right button,
+.survey-titlebar__right button:hover,
+.survey-titlebar__right button:focus,
+.survey-titlebar__right button:active,
+.survey-titlebar__right a,
+.survey-titlebar__right a:hover,
+.survey-titlebar__right a:focus,
+.survey-titlebar__right a:active,
+.survey-titlebar__right .btn-link,
+.survey-titlebar__right .btn-link:hover,
+.survey-titlebar__right .btn-link:focus,
+.survey-titlebar__right .increaseFont,
+.survey-titlebar__right .decreaseFont,
+.survey-titlebar__right .increaseFont *,
+.survey-titlebar__right .decreaseFont * {
+  text-decoration: none !important;
 }
 
 .survey-titlebar__right .font-resize-header span:nth-child(1) {
@@ -132,11 +186,47 @@ body {
   color: #334155 !important;
   font-weight: 800 !important;
 }
+.survey-titlebar__right button,
+.survey-titlebar__right button:hover,
+.survey-titlebar__right button:focus,
+.survey-titlebar__right button:active,
+.survey-titlebar__right a,
+.survey-titlebar__right a:hover,
+.survey-titlebar__right a:focus,
+.survey-titlebar__right a:active,
+.survey-titlebar__right .btn-link,
+.survey-titlebar__right .btn-link:hover,
+.survey-titlebar__right .btn-link:focus,
+.survey-titlebar__right .increaseFont,
+.survey-titlebar__right .decreaseFont,
+.survey-titlebar__right .increaseFont *,
+.survey-titlebar__right .decreaseFont * {
+  text-decoration: none !important;
+}
+
 .survey-titlebar__right .font-resize-header span:nth-child(2) {
   font-size: 12px !important;
   color: #64748b !important;
   font-weight: 700 !important;
 }
+.survey-titlebar__right button,
+.survey-titlebar__right button:hover,
+.survey-titlebar__right button:focus,
+.survey-titlebar__right button:active,
+.survey-titlebar__right a,
+.survey-titlebar__right a:hover,
+.survey-titlebar__right a:focus,
+.survey-titlebar__right a:active,
+.survey-titlebar__right .btn-link,
+.survey-titlebar__right .btn-link:hover,
+.survey-titlebar__right .btn-link:focus,
+.survey-titlebar__right .increaseFont,
+.survey-titlebar__right .decreaseFont,
+.survey-titlebar__right .increaseFont *,
+.survey-titlebar__right .decreaseFont * {
+  text-decoration: none !important;
+}
+
 .survey-titlebar__right .font-resize-header span:nth-child(3) {
   font-size: 10px !important;
   color: #94a3b8 !important;
@@ -298,21 +388,54 @@ body {
   font-size: 13px !important;
 }
 
-#return_corner, #survey_queue_corner {
-  border-radius: 0 0 12px 12px !important;
-  border: 1px solid #e2e8f0 !important;
-  border-top: none !important;
+/* Save & Return and Survey Queue corner buttons */
+#return_corner,
+#survey_queue_corner {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 12px !important;
+  margin: 0 !important;
+  border-radius: 9999px !important;
+  border: 1px solid var(--ms-primary, #3b82f6) !important;
   background: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
-  padding: 6px 14px !important;
+  color: var(--ms-primary, #3b82f6) !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  white-space: nowrap !important;
 }
-#return_corner a, #survey_queue_corner a {
-  color: #3b82f6 !important;
+
+#return_corner:hover,
+#survey_queue_corner:hover {
+  background: var(--ms-primary, #3b82f6) !important;
+  border-color: var(--ms-primary, #3b82f6) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-1px) !important;
+  text-decoration: none !important;
+}
+
+#return_corner a, #return_corner a:link, #return_corner a:visited, #return_corner i, #return_corner span,
+#survey_queue_corner a, #survey_queue_corner a:link, #survey_queue_corner a:visited, #survey_queue_corner i, #survey_queue_corner span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: inherit !important;
+  font-size: 11.5px !important;
   font-weight: 600 !important;
   text-decoration: none !important;
 }
-#return_corner a:hover, #survey_queue_corner a:hover {
-  color: #2563eb !important;
+
+#return_corner:hover a, #return_corner:hover i, #return_corner:hover span,
+#survey_queue_corner:hover a, #survey_queue_corner:hover i, #survey_queue_corner:hover span {
+  color: #ffffff !important;
+  text-decoration: none !important;
 }
 
 #form {
@@ -371,69 +494,348 @@ body {
   margin-left: 4px;
 }
 
-#questiontable :is(input, select, textarea),
-#questiontable input[type="text"],
+#questiontable :is(input:not([type="radio"]):not([type="checkbox"]):not([type="button"]):not([type="submit"]):not([type="image"]):not([type="file"]):not([type="reset"]):not(.rc-autocomplete), select, textarea),
+#questiontable input[type="text"]:not(.rc-autocomplete),
 #questiontable input[type="password"],
 #questiontable textarea,
 #questiontable textarea.notesbox,
-#questiontable select,
-#questiontable select.x-form-field {
-  border-radius: 10px !important;
+#questiontable select:not(.rc-autocomplete),
+#questiontable select:not(.rc-autocomplete).x-form-field {
+  border-radius: var(--ms-radius, 10px) !important;
   border: 1.5px solid #cbd5e1 !important;
   background-color: #ffffff !important;
   color: #1e293b !important;
   padding: 9px 13px !important;
-  font-size: 14px !important;
+  font-family: inherit !important;
+  font-size: 14.5px !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
   outline: none !important;
   transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-#questiontable input[type="text"]:hover,
+#questiontable input[type="text"]:not(.rc-autocomplete):hover,
 #questiontable input[type="password"]:hover,
 #questiontable textarea:hover,
 #questiontable textarea.notesbox:hover,
-#questiontable select:hover,
-#questiontable select.x-form-field:hover {
+#questiontable select:not(.rc-autocomplete):hover,
+#questiontable select:not(.rc-autocomplete).x-form-field:hover {
   border-color: #94a3b8 !important;
 }
 
 /* Override REDCap WCAG :is(input, select, textarea, a):focus flat-black outline */
 #questiontable :is(input:not([type="button"]), select, textarea):focus,
 #questiontable :is(input:not([type="button"]), select, textarea):focus-visible,
-#questiontable input[type="text"]:focus,
-#questiontable input[type="text"]:focus-visible,
+#questiontable input[type="text"]:not(.rc-autocomplete):focus,
+#questiontable input[type="text"]:not(.rc-autocomplete):focus-visible,
 #questiontable input[type="password"]:focus,
 #questiontable input[type="password"]:focus-visible,
 #questiontable textarea:focus,
 #questiontable textarea:focus-visible,
 #questiontable textarea.notesbox:focus,
 #questiontable textarea.notesbox:focus-visible,
-#questiontable select:focus,
-#questiontable select:focus-visible,
-#questiontable select.x-form-field:focus,
-#questiontable select.x-form-field:focus-visible {
+#questiontable :is(select):focus,
+#questiontable select:not(.rc-autocomplete):focus,
+#questiontable select:not(.rc-autocomplete):focus-visible,
+#questiontable select:not(.rc-autocomplete).x-form-field:focus,
+#questiontable select:not(.rc-autocomplete).x-form-field:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
   border-color: #3b82f6 !important;
   box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.22) !important;
 }
 
+/* Hide original select when autocomplete is active */
+#questiontable select.rc-autocomplete,
+#questiontable select.x-form-field.rc-autocomplete,
+#questiontable select.x-form-text.rc-autocomplete,
+select.rc-autocomplete {
+  display: none !important;
+}
+
+td.data:has(select.rc-autocomplete) span[data-kind='field-value'] > span::after,
+td.data:has(select.rc-autocomplete) span::after {
+  display: none !important;
+}
+
+/* ========================================================
+   REDCap Dropdown Autocomplete Modern Styling
+   ======================================================== */
+
+/* Autocomplete Container */
+#questiontable .rc-autocomplete-wrapper,
+#questiontable .nowrap:has(> input.rc-autocomplete),
+.rc-autocomplete-wrapper {
+  display: flex !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  box-sizing: border-box !important;
+  background-color: var(--ms-input-bg, #ffffff) !important;
+  border: 1.5px solid var(--ms-input-border, #cbd5e1) !important;
+  border-radius: var(--ms-radius, 10px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+#questiontable .rc-autocomplete-wrapper:hover,
+#questiontable .nowrap:has(> input.rc-autocomplete):hover {
+  border-color: var(--ms-primary, #3b82f6) !important;
+  box-shadow: 0 3px 10px var(--ms-primary-shadow, rgba(59, 130, 246, 0.18)) !important;
+}
+
+#questiontable .rc-autocomplete-wrapper:focus-within,
+#questiontable .nowrap:has(> input.rc-autocomplete):focus-within {
+  border-color: var(--ms-primary, #3b82f6) !important;
+  box-shadow: 0 0 0 3.5px var(--ms-focus-ring, rgba(59, 130, 246, 0.25)), 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+  background-color: var(--ms-input-bg, #ffffff) !important;
+}
+
+/* Autocomplete Text Input */
+#questiontable input.rc-autocomplete,
+#questiontable input.ui-autocomplete-input,
+input.rc-autocomplete,
+input[id^="rc-ac-input_"] {
+  display: block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  padding: 0 14px 0 16px !important;
+  line-height: 44px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  font-family: inherit !important;
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
+  color: var(--ms-input-text, #1e293b) !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+#questiontable input.rc-autocomplete:focus,
+#questiontable input.ui-autocomplete-input:focus,
+input[id^="rc-ac-input_"]:focus {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#questiontable input.rc-autocomplete::placeholder,
+input[id^="rc-ac-input_"]::placeholder {
+  color: var(--ms-text-sec, #94a3b8) !important;
+  font-size: 14.5px !important;
+  font-weight: 400 !important;
+}
+
+/* Autocomplete Dropdown Toggle Button */
+#questiontable button.rc-autocomplete,
+#questiontable button.ui-button.rc-autocomplete,
+button.rc-autocomplete,
+button.rc-autocomplete.ui-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 44px !important;
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-left: 1.5px solid var(--ms-input-border, #cbd5e1) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  outline: none !important;
+  color: var(--ms-primary, #3b82f6) !important;
+  position: relative !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+}
+
+#questiontable .rc-autocomplete-wrapper:focus-within button.rc-autocomplete,
+#questiontable .nowrap:has(> input.rc-autocomplete):focus-within button.rc-autocomplete {
+  border-left-color: var(--ms-primary, #3b82f6) !important;
+}
+
+/* Soft Hover Tint - Never Solid Fill */
+#questiontable button.rc-autocomplete:hover,
+#questiontable button.rc-autocomplete.ui-state-hover,
+#questiontable button.ui-button.rc-autocomplete:hover,
+#questiontable button.ui-button.rc-autocomplete.ui-state-hover,
+button.rc-autocomplete:hover,
+button.rc-autocomplete.ui-state-hover {
+  background: var(--ms-focus-ring, rgba(59, 130, 246, 0.12)) !important;
+  background-color: var(--ms-focus-ring, rgba(59, 130, 246, 0.12)) !important;
+  border-color: var(--ms-input-border, #cbd5e1) !important;
+  border-left-color: var(--ms-primary, #3b82f6) !important;
+  color: var(--ms-primary-hover, #2563eb) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#questiontable button.rc-autocomplete:active,
+#questiontable button.rc-autocomplete.ui-state-active,
+#questiontable button.ui-button.rc-autocomplete:active,
+#questiontable button.ui-button.rc-autocomplete.ui-state-active {
+  background: var(--ms-primary-shadow, rgba(59, 130, 246, 0.22)) !important;
+  background-color: var(--ms-primary-shadow, rgba(59, 130, 246, 0.22)) !important;
+}
+
+/* Hide all native images, jQuery UI icons, and texts */
+#questiontable button.rc-autocomplete img,
+#questiontable button.rc-autocomplete .ui-icon,
+#questiontable button.rc-autocomplete .ui-button-text,
+button.rc-autocomplete img,
+button.rc-autocomplete .ui-icon {
+  display: none !important;
+}
+
+/* Modern Crisp SVG Vector Chevron with Dynamic Theme Color */
+#questiontable button.rc-autocomplete::after,
+button.rc-autocomplete::after {
+  content: "" !important;
+  display: block !important;
+  width: 14px !important;
+  height: 14px !important;
+  background-color: var(--ms-primary, #3b82f6) !important;
+  -webkit-mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6L8 10.5L12.5 6'/%3E%3C/svg%3E") !important;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6L8 10.5L12.5 6'/%3E%3C/svg%3E") !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  -webkit-mask-size: 14px 14px !important;
+  mask-size: 14px 14px !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.15s ease !important;
+  pointer-events: none !important;
+}
+
+#questiontable button.rc-autocomplete[listopen="1"]::after,
+button.rc-autocomplete[listopen="1"]::after {
+  transform: rotate(180deg) !important;
+}
+
+#questiontable button.rc-autocomplete:hover::after,
+#questiontable button.rc-autocomplete.ui-state-hover::after,
+button.rc-autocomplete:hover::after,
+button.rc-autocomplete.ui-state-hover::after {
+  background-color: var(--ms-primary-hover, #2563eb) !important;
+}
+
+/* jQuery UI Autocomplete Floating Dropdown Menu */
+ul.ui-autocomplete.ui-menu {
+  position: absolute !important;
+  box-sizing: border-box !important;
+  background: var(--ms-card-bg, #ffffff) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1.5px solid var(--ms-primary, #3b82f6) !important;
+  border-radius: var(--ms-radius, 12px) !important;
+  box-shadow: 0 12px 28px -4px var(--ms-primary-shadow, rgba(0, 0, 0, 0.18)), 0 6px 12px -2px rgba(0, 0, 0, 0.06) !important;
+  padding: 6px !important;
+  margin-top: 4px !important;
+  max-height: 280px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  z-index: 99999 !important;
+  list-style: none !important;
+  font-family: inherit !important;
+}
+
+/* Scrollbar */
+ul.ui-autocomplete.ui-menu::-webkit-scrollbar {
+  width: 6px !important;
+}
+ul.ui-autocomplete.ui-menu::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+ul.ui-autocomplete.ui-menu::-webkit-scrollbar-thumb {
+  background: var(--ms-input-border, #cbd5e1) !important;
+  border-radius: 9999px !important;
+}
+ul.ui-autocomplete.ui-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--ms-text-sec, #94a3b8) !important;
+}
+
+/* List Item */
+ul.ui-autocomplete.ui-menu li.ui-menu-item,
+ul.ui-autocomplete.ui-menu .ui-menu-item {
+  display: block !important;
+  padding: 9px 14px !important;
+  margin: 2px 0 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  font-family: inherit !important;
+  font-size: 14.5px !important;
+  font-weight: 500 !important;
+  color: var(--ms-text-main, #1e293b) !important;
+  line-height: 1.4 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  background: transparent !important;
+  transition: all 0.12s ease !important;
+}
+
+/* Hover & Active Selected State */
+ul.ui-autocomplete.ui-menu li.ui-menu-item:hover,
+ul.ui-autocomplete.ui-menu li.ui-menu-item.ui-state-focus,
+ul.ui-autocomplete.ui-menu li.ui-menu-item.ui-state-active,
+ul.ui-autocomplete.ui-menu .ui-state-focus,
+ul.ui-autocomplete.ui-menu .ui-state-active,
+ul.ui-autocomplete.ui-menu .ui-menu-item-wrapper.ui-state-active {
+  background: var(--ms-focus-ring, rgba(59, 130, 246, 0.12)) !important;
+  background-color: var(--ms-focus-ring, rgba(59, 130, 246, 0.12)) !important;
+  color: var(--ms-primary, #3b82f6) !important;
+  font-weight: 600 !important;
+  border: none !important;
+  margin: 2px 0 !important;
+  padding: 9px 14px !important;
+  border-radius: 8px !important;
+}
+
 /* Custom Modern Dropdown Menu Styling */
-#questiontable select,
-#questiontable select.x-form-field,
-#questiontable select.x-form-text {
+td.data:has(select) span[data-kind='field-value'],
+td.data:has(select) span[data-kind='field-value'] > span,
+td.data span[data-kind='field-value']:has(select),
+td.data span[data-kind='field-value'] > span:has(select) {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#questiontable select:not(.rc-autocomplete),
+#questiontable select:not(.rc-autocomplete).x-form-field,
+#questiontable select:not(.rc-autocomplete).x-form-text,
+select.form-control:not(.rc-autocomplete),
+select.form-select:not(.rc-autocomplete) {
   appearance: none !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   border-radius: 10px !important;
   border: 1.5px solid #cbd5e1 !important;
   background-color: #ffffff !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%233b82f6'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNicgaGVpZ2h0PScxNicgdmlld0JveD0nMCAwIDI0IDI0JyBmaWxsPSdub25lJyBzdHJva2U9JyMzYjgyZjYnIHN0cm9rZS13aWR0aD0nMi41JyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnPjxwb2x5bGluZSBwb2ludHM9JzYgOSAxMiAxNSAxOCA5Jz48L3BvbHlsaW5lPjwvc3ZnPg==") !important;
   background-repeat: no-repeat !important;
-  background-position: calc(100% - 14px) center !important;
+  background-position: right 14px center !important;
   background-size: 14px 14px !important;
-  padding: 10px 42px 10px 14px !important;
+  padding: 10px 40px 10px 14px !important;
+  height: 42px !important;
   min-height: 42px !important;
   cursor: pointer !important;
   line-height: 1.4 !important;
@@ -442,60 +844,89 @@ body {
   color: #1e293b !important;
   min-width: 240px !important;
   max-width: 100% !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  outline: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
-#questiontable select:hover,
-#questiontable select.x-form-field:hover {
+#questiontable select:not(.rc-autocomplete)::-ms-expand,
+select.x-form-field::-ms-expand,
+select.x-form-text::-ms-expand {
+  display: none !important;
+}
+
+#questiontable select:not(.rc-autocomplete):hover,
+#questiontable select:not(.rc-autocomplete).x-form-field:hover,
+#questiontable select:not(.rc-autocomplete).x-form-text:hover {
   border-color: #3b82f6 !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.22) !important;
 }
 
-#questiontable select:focus,
-#questiontable select:focus-visible,
-#questiontable select.x-form-field:focus,
-#questiontable select.x-form-field:focus-visible {
+#questiontable select:not(.rc-autocomplete):focus,
+#questiontable select:not(.rc-autocomplete):focus-visible,
+#questiontable select:not(.rc-autocomplete).x-form-field:focus,
+#questiontable select:not(.rc-autocomplete).x-form-field:focus-visible,
+#questiontable select:not(.rc-autocomplete).x-form-text:focus,
+#questiontable select:not(.rc-autocomplete).x-form-text:focus-visible {
   outline: none !important;
   outline-offset: 0 !important;
   border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.22), 0 2px 5px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 0 0 3.5px rgba(59, 130, 246, 0.22) !important;
   background-color: #ffffff !important;
 }
 
-#questiontable select option {
-  background: #ffffff !important;
+#questiontable select:not(.rc-autocomplete) option {
+  background-color: #ffffff !important;
   color: #1e293b !important;
-  padding: 10px 14px;
-  font-size: 14px;
+  padding: 10px 14px !important;
+  font-size: 14.5px !important;
 }
 
-#questiontable select option:checked {
-  background: #f1f5f9 !important;
+#questiontable select:not(.rc-autocomplete):invalid,
+#questiontable select:not(.rc-autocomplete) option:disabled,
+#questiontable select:not(.rc-autocomplete) option[value=""] {
+  color: #94a3b8 !important;
+}
+
+#questiontable select:not(.rc-autocomplete) option:checked {
+  background-color: #f1f5f9 !important;
   color: #3b82f6 !important;
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
-/* Modern Textarea Styling */
-#questiontable textarea,
-#questiontable textarea.notesbox {
-  line-height: 1.5 !important;
-  min-height: 85px !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+.expandLinkParent {
+  text-align: right !important;
+  margin-top: 5px !important;
 }
 
-.expandLinkParent a.expandLink {
-  color: #3b82f6 !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
+.expandLinkParent a.expandLink,
+.expandLinkParent a.expandLink:link,
+.expandLinkParent a.expandLink:visited {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--ms-text-sec, var(--ms-text-muted, #64748b)) !important;
+  background: var(--ms-card-bg, #ffffff) !important;
+  border: 1px solid var(--ms-input-border, #cbd5e1) !important;
+  border-radius: 6px !important;
+  padding: 3px 9px !important;
   text-decoration: none !important;
-  display: inline-block !important;
-  margin-top: 4px !important;
+  cursor: pointer !important;
+  outline: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.15s ease !important;
 }
-.expandLinkParent a.expandLink:hover {
-  text-decoration: underline !important;
+
+.expandLinkParent a.expandLink:hover,
+.expandLinkParent a.expandLink:focus,
+.expandLinkParent a.expandLink:active {
+  color: var(--ms-primary) !important;
+  border-color: var(--ms-primary) !important;
+  background: var(--ms-section-bg, #eff6ff) !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Date/Time Buttons: 'Today', 'Now', and small utility buttons */
@@ -564,12 +995,22 @@ span.df {
 
 /* Ensure date and datetime fields have sufficient width to display values */
 #questiontable input[class*="date_"],
+#questiontable input[class*="datetime_"],
+#questiontable input[class*="time_"],
+#questiontable input.hasDatepicker,
 #questiontable input.date_ymd,
 #questiontable input.date_mdy,
 #questiontable input.date_dmy,
-#questiontable input.date {
-  min-width: 145px !important;
-  width: 145px !important;
+#questiontable input.datetime_ymd,
+#questiontable input.datetime_mdy,
+#questiontable input.datetime_dmy,
+#questiontable input.datetime_seconds_ymd,
+#questiontable input.datetime_seconds_mdy,
+#questiontable input.datetime_seconds_dmy,
+#questiontable input.date,
+#questiontable input.time {
+  min-width: 175px !important;
+  width: auto !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
@@ -581,10 +1022,7 @@ span.df {
 #questiontable input.datetime_seconds_ymd,
 #questiontable input.datetime_seconds_mdy,
 #questiontable input.datetime_seconds_dmy {
-  min-width: 200px !important;
-  width: 200px !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+  min-width: 235px !important;
 }
 
 /* Reset link for radios and checkboxes */
@@ -627,9 +1065,53 @@ a.viewEq:hover {
   text-decoration: underline !important;
 }
 
+/* Text-to-speech reading button per question */
+.rc-tts-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  padding: 0 !important;
+  margin-right: 6px !important;
+  vertical-align: middle !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 50% !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  transition: all 0.15s ease !important;
+}
+.rc-tts-btn:hover {
+  background: #eff6ff !important;
+  border-color: #3b82f6 !important;
+  color: #3b82f6 !important;
+  transform: scale(1.08);
+}
+.rc-tts-btn.active,
+.rc-tts-btn:active {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+.rc-tts-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+  fill: currentColor !important;
+}
+
+/* Enhanced Choice cards */
 div.enhancedchoice {
   margin: 4px 6px 4px 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
+
 div.enhancedchoice label {
   border-radius: 10px !important;
   border: 1.5px solid #cbd5e1 !important;
@@ -639,43 +1121,75 @@ div.enhancedchoice label {
   padding: 8px 14px !important;
   font-size: 13.5px !important;
   font-weight: 500 !important;
+  outline: none !important;
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
+
 div.enhancedchoice label:hover,
 div.enhancedchoice label.hover:hover {
   border-color: #3b82f6 !important;
   background-color: #eff6ff !important;
   color: #3b82f6 !important;
   transform: translateY(-1px);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08) !important;
 }
+
 div.enhancedchoice label:hover *,
 div.enhancedchoice label.hover:hover * {
   color: #3b82f6 !important;
 }
+
 div.enhancedchoice label.selectedradio,
 div.enhancedchoice label.selectedchkbox,
 div.enhancedchoice label.selectedradio:hover,
-div.enhancedchoice label.selectedchkbox:hover {
+div.enhancedchoice label.selectedchkbox:hover,
+div.enhancedchoice.enhancedchoice_selected label,
+div.enhancedchoice.ui-state-active label {
   border-color: #3b82f6 !important;
   background-color: #3b82f6 !important;
   color: #ffffff !important;
   box-shadow: 0 4px 10px rgba(59, 130, 246, 0.28) !important;
 }
+
 div.enhancedchoice label.selectedradio *,
 div.enhancedchoice label.selectedchkbox *,
 div.enhancedchoice label.selectedradio:hover *,
-div.enhancedchoice label.selectedchkbox:hover * {
+div.enhancedchoice label.selectedchkbox:hover *,
+div.enhancedchoice.enhancedchoice_selected label *,
+div.enhancedchoice.ui-state-active label * {
   color: #ffffff !important;
 }
 
-input[type="radio"], input[type="checkbox"] {
-  accent-color: #3b82f6;
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  margin-right: 6px;
-  cursor: pointer;
+#questiontable input[type="radio"],
+#questiontable input[type="checkbox"],
+input[type="radio"],
+input[type="checkbox"] {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 6px 0 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  vertical-align: middle !important;
+  accent-color: var(--ms-primary, #3b82f6) !important;
+  cursor: pointer !important;
+  transform: none !important;
+}
+
+#questiontable input[type="radio"]:focus,
+#questiontable input[type="checkbox"]:focus,
+#questiontable input[type="radio"]:focus-visible,
+#questiontable input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--ms-primary, #3b82f6) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 label.choicevert, label.choicehoriz {
   font-size: 14px !important;
@@ -874,10 +1388,10 @@ button[name="submit-btn-savereturnlater"]:hover,
     border-bottom: none !important;
     padding-bottom: 2px !important;
   }
-  #questiontable input[type="text"],
+  #questiontable input[type="text"]:not(.rc-autocomplete),
   #questiontable input[type="password"],
   #questiontable textarea,
-  #questiontable select {
+  #questiontable select:not(.rc-autocomplete) {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;

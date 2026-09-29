@@ -21,6 +21,28 @@ class ModernSurvey extends AbstractExternalModule
         }
     }
 
+    public function redcap_survey_page($project_id, $record = null, $instrument = null, $event_id = null, $group_id = null, $survey_hash = null, $response_id = null, $repeat_instance = 1)
+    {
+        global $Proj;
+        $customCss = '';
+        if (isset($Proj) && isset($Proj->forms[$instrument]['survey_id'])) {
+            $survey_id = $Proj->forms[$instrument]['survey_id'];
+            $customCss = $Proj->surveys[$survey_id]['custom_css'] ?? '';
+        }
+        if (empty($customCss) && !empty($survey_hash)) {
+            $sql = "SELECT s.custom_css FROM redcap_surveys s JOIN redcap_surveys_participants p ON s.survey_id = p.survey_id WHERE p.hash = ?";
+            $res = $this->query($sql, [$survey_hash]);
+            if ($res && ($row = $res->fetch_assoc())) {
+                $customCss = $row['custom_css'] ?? '';
+            }
+        }
+
+        if (!empty($customCss) && strpos($customCss, 'Modern Survey Theme:') !== false) {
+            $clientJsUrl = $this->getUrl('survey_client.js');
+            echo "<script type='text/javascript' src='{$clientJsUrl}'></script>\n";
+        }
+    }
+
     public function isSurveySettingsPage()
     {
         return $this->isPage('Surveys/edit_info.php') || $this->isPage('Surveys/create_survey.php');
@@ -195,18 +217,19 @@ class ModernSurvey extends AbstractExternalModule
 
         // Retrieve created docs_id from redcap_docs_to_edocs
         $sql = "SELECT docs_id FROM redcap_docs_to_edocs WHERE doc_id = ? ORDER BY docs_id DESC LIMIT 1";
-        $q = db_query($sql, [$edoc_id]);
-        if (!$q || !db_num_rows($q)) {
+        $result = $this->query($sql, [$edoc_id]);
+        $row = $result ? $result->fetch_assoc() : null;
+        if (!$row || empty($row['docs_id'])) {
             return [
                 'success' => false,
                 'error' => 'Could not locate File Repository entry for the uploaded file.'
             ];
         }
-        $docs_id = db_result($q, 0);
+        $docs_id = (int)$row['docs_id'];
 
         // Ensure file is also in redcap_docs_attachments so it is served on public surveys
         // even if general public file sharing is disabled at the system level
-        db_query("REPLACE INTO redcap_docs_attachments (docs_id) VALUES (?)", [$docs_id]);
+        $this->query("REPLACE INTO redcap_docs_attachments (docs_id) VALUES (?)", [$docs_id]);
 
         // Generate public link using REDCap FileRepository framework
         $publicLink = FileRepository::getPublicLink($docs_id, $project_id);

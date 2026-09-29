@@ -1,6 +1,6 @@
 {
     "name": "Modern Survey Themes",
-    "description": "Transforms bland REDCap public surveys into stunning, modern surveys with rounded card containers, sleek field controls, and beautiful background images directly from the Survey Settings page.",
+    "description": "Customizable modern themes, card layouts, and sleek styling for REDCap public surveys.",
     "namespace": "UWMadison\\ModernSurvey",
     "authors": [
         {

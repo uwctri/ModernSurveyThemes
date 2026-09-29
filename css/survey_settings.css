@@ -328,12 +328,12 @@
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
-    padding: 14px 18px;
+    padding: 12px 16px;
     margin-bottom: 18px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 18px;
+    gap: 12px 18px;
 }
 
 .ms-option-group {
@@ -347,6 +347,15 @@
     font-weight: 600;
     color: #334155;
     margin: 0;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ms-option-group label i,
+.ms-option-group label svg {
+    margin-right: 5px;
+    color: #475569;
 }
 
 .ms-select {
@@ -789,6 +798,41 @@ tr:has(#survey_theme_design) {
     background: #ffffff !important;
     text-decoration: none !important;
     transform: translateY(-1px) !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
+}
+
+#ms_preview_modal_content .expandLinkParent {
+    text-align: right !important;
+    margin-top: 5px !important;
+}
+
+#ms_preview_modal_content .expandLinkParent a.expandLink,
+#ms_preview_modal_content .expandLinkParent a.expandLink:link,
+#ms_preview_modal_content .expandLinkParent a.expandLink:visited {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 3px 9px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    outline: none !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.15s ease !important;
+}
+
+#ms_preview_modal_content .expandLinkParent a.expandLink:hover,
+#ms_preview_modal_content .expandLinkParent a.expandLink:focus,
+#ms_preview_modal_content .expandLinkParent a.expandLink:active {
+    color: var(--ms-primary, #3b82f6) !important;
+    border-color: var(--ms-primary, #3b82f6) !important;
+    background: #eff6ff !important;
+    text-decoration: none !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
 }
 
