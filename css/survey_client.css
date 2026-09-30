@@ -506,6 +506,17 @@ form#form select,
     }
 }
 
+/* ─── Textarea Expand / Shrink Button Alignment ───────────────────────────── */
+.expandLinkParent {
+    width: 90% !important;
+    max-width: 90% !important;
+    font-size: 0 !important;
+}
+
+.expandLinkParent a.expandLink {
+    font-size: 11px !important;
+}
+
 /* ─── Mobile View Adjustments ────────────────────────────────────────────────── */
 @media screen and (max-width: 768px) {
     html, body, html body {
@@ -612,5 +623,10 @@ form#form select,
         width: 42px !important;
         min-width: 42px !important;
         max-width: 42px !important;
+    }
+
+    .expandLinkParent {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }

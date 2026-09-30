@@ -22,6 +22,21 @@ $(() => {
     $('#questiontable .choicevert.hidden, #questiontable .choicehoriz.hidden').hide()
     $('#questiontable div.enhancedchoice label').css({ 'margin': '0' })
 
+    // Ensure expand link container matches textarea if textarea has full width
+    const alignExpandLinks = () => {
+        $('.expandLinkParent').each(function () {
+            const $parent = $(this)
+            const $td = $parent.closest('td')
+            const $ta = $td.find('textarea')
+            if ($ta.length) {
+                if ($ta.css('max-width') === '100%' || $ta.outerWidth() > $parent.outerWidth() + 5) {
+                    $parent.css({ 'width': '100%', 'max-width': '100%' })
+                }
+            }
+        })
+    }
+    alignExpandLinks()
+
     const DEFAULT_AUTOCOMPLETE_THRESHOLD = '5'
     const AUTOCOMPLETE_PLACEHOLDER = 'Select an option or type to search...'
 
