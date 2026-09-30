@@ -33,6 +33,7 @@ class ModernSurvey extends AbstractExternalModule
             return;
 
         $fontsCssUrl = $this->getUrl('fonts/fonts.css');
+        $clientCssUrl = $this->getUrl('css/survey_client.css');
         $criticalCss = '';
         if (preg_match('/(:root\s*\{[^}]+\})/s', $customCss, $rootMatches))
             $criticalCss .= $rootMatches[1] . "\n";
@@ -40,6 +41,7 @@ class ModernSurvey extends AbstractExternalModule
             $criticalCss .= $bodyMatches[1] . "\n";
 
         echo "<link rel='stylesheet' type='text/css' href='{$fontsCssUrl}'>\n";
+        echo "<link rel='stylesheet' id='ms-client-styles' type='text/css' href='{$clientCssUrl}'>\n";
         echo "<style id='ms-fouc-guard'>
                 {$criticalCss}
                 html body #pagecontainer {

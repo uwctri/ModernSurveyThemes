@@ -1,0 +1,616 @@
+/* ==========================================================================
+   Modern Survey Client Styles (Autocomplete, Date/Time Pickers & Mobile Layout)
+   ========================================================================== */
+
+/* ─── Autocomplete Container Layout ────────────────────────────────────────── */
+#questiontable .rc-autocomplete-wrapper.ms-ac-container,
+#questiontable .rc-autocomplete-wrapper,
+#questiontable .nowrap.rc-autocomplete-wrapper {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+#questiontable input.rc-autocomplete,
+form#form input.rc-autocomplete,
+form#form input.ui-autocomplete-input,
+input.rc-autocomplete {
+    max-width: none !important;
+}
+
+#questiontable button.rc-autocomplete,
+button.rc-autocomplete {
+    border-top-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+    border-bottom-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+}
+
+#questiontable button.rc-autocomplete:hover,
+#questiontable button.rc-autocomplete.ui-state-hover,
+button.rc-autocomplete:hover,
+button.rc-autocomplete.ui-state-hover {
+    border-top-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+    border-bottom-right-radius: calc(var(--ms-radius, 10px) - 1.5px) !important;
+}
+
+/* ─── Modern Date/Time Picker Modal Overlay ────────────────────────────────── */
+.ms-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    background: rgba(0, 0, 0, 0.38);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ms-picker-panel {
+    position: relative;
+    z-index: 99999;
+    background: var(--ms-card-bg, #ffffff);
+    border: 1px solid var(--ms-card-border, #e2e8f0);
+    border-radius: var(--ms-radius, 14px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-width: 95vw;
+    font-family: var(--ms-font-family, system-ui, sans-serif);
+}
+
+.ms-picker-cols {
+    display: flex;
+}
+
+.ms-picker-cal {
+    padding: 14px 12px;
+    min-width: 242px;
+}
+
+.ms-picker-clock {
+    padding: 12px 14px;
+    border-left: 1px solid var(--ms-card-border, #e2e8f0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 220px;
+}
+
+.ms-cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ms-cal-nav-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--ms-card-border, #e2e8f0);
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ms-text-sec, #64748b);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1;
+    transition: background 0.12s;
+}
+
+.ms-cal-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.ms-cal-month-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ms-text-main, #1e293b);
+}
+
+.ms-cal-dow-row {
+    display: grid;
+    grid-template-columns: repeat(7, 32px);
+    margin-bottom: 3px;
+}
+
+.ms-cal-dow {
+    width: 32px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ms-text-sec, #94a3b8);
+    padding-bottom: 3px;
+    letter-spacing: 0.02em;
+}
+
+.ms-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 32px);
+    gap: 2px;
+}
+
+.ms-cal-day {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    color: var(--ms-text-main, #1e293b);
+}
+
+.ms-cal-day:hover:not(.ms-day-other):not(.ms-day-selected) {
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.ms-cal-day.ms-day-today:not(.ms-day-selected) {
+    color: var(--ms-primary, #3b82f6);
+    font-weight: 700;
+}
+
+.ms-cal-day.ms-day-selected {
+    background: var(--ms-primary, #3b82f6);
+    color: #fff;
+    font-weight: 700;
+}
+
+.ms-cal-day.ms-day-other {
+    color: var(--ms-card-border, #cbd5e1);
+    cursor: default;
+}
+
+.ms-clock-tabs {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+}
+
+.ms-clock-tab {
+    flex: 1;
+    padding: 3px 0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    border: 1.5px solid var(--ms-card-border, #e2e8f0);
+    color: var(--ms-text-sec, #64748b);
+    background: none;
+    transition: all 0.12s;
+}
+
+.ms-clock-tab.ms-tab-active {
+    background: var(--ms-primary, #3b82f6);
+    color: #fff;
+    border-color: var(--ms-primary, #3b82f6);
+}
+
+.ms-clock-digital {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ms-text-main, #1e293b);
+}
+
+.ms-clock-seg {
+    padding: 2px 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+}
+
+.ms-clock-seg:hover:not(.ms-seg-active) {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.ms-clock-seg.ms-seg-active {
+    background: var(--ms-primary, #3b82f6);
+    color: #fff;
+}
+
+.ms-clock-sep {
+    color: var(--ms-text-sec, #94a3b8);
+}
+
+.ms-ampm-row {
+    display: flex;
+    gap: 6px;
+}
+
+.ms-ampm-btn {
+    padding: 3px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--ms-card-border, #e2e8f0);
+    color: var(--ms-text-sec, #64748b);
+    background: none;
+    transition: all 0.12s;
+}
+
+.ms-ampm-btn.ms-ampm-active {
+    background: var(--ms-primary, #3b82f6);
+    color: #fff;
+    border-color: var(--ms-primary, #3b82f6);
+}
+
+.ms-clock-face {
+    position: relative;
+    width: 192px;
+    height: 192px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.06);
+    border: 1.5px solid var(--ms-card-border, #e2e8f0);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.ms-clock-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    width: 2px;
+    background: var(--ms-primary, #3b82f6);
+    border-radius: 2px;
+    pointer-events: none;
+    margin-left: -1px;
+}
+
+.ms-clock-hand-dot {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ms-primary, #3b82f6);
+}
+
+.ms-clock-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ms-primary, #3b82f6);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.ms-clock-num {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ms-text-main, #1e293b);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s, color 0.1s;
+    z-index: 1;
+}
+
+.ms-clock-num:hover:not(.ms-num-selected) {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.ms-clock-num.ms-num-selected {
+    background: var(--ms-primary, #3b82f6);
+    color: #fff;
+}
+
+.ms-picker-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px 10px;
+    border-top: 1px solid var(--ms-card-border, #e2e8f0);
+}
+
+.ms-picker-btn {
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.12s;
+}
+
+.ms-picker-btn-primary {
+    background: var(--ms-primary, #3b82f6);
+    color: #fff;
+}
+
+.ms-picker-btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.ms-picker-btn-ghost {
+    background: none;
+    color: var(--ms-text-sec, #64748b);
+    border: 1px solid var(--ms-card-border, #e2e8f0);
+}
+
+.ms-picker-btn-ghost:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ─── Date / Time Wrap & Trigger Layout ────────────────────────────────────── */
+#questiontable .ms-date-wrap,
+form#form .ms-date-wrap,
+.ms-date-wrap {
+    display: inline-flex !important;
+    align-items: stretch !important;
+    vertical-align: middle !important;
+    border: 1.5px solid var(--ms-card-border, #cbd5e1) !important;
+    border-radius: var(--ms-radius, 10px) !important;
+    overflow: hidden !important;
+    background-color: var(--ms-card-bg, #ffffff) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    box-sizing: border-box !important;
+    min-height: 40px !important;
+    height: 40px !important;
+}
+
+.ms-date-wrap.ms-wrap-date {
+    min-width: 175px !important;
+}
+
+.ms-date-wrap.ms-wrap-datetime {
+    min-width: 240px !important;
+}
+
+.ms-date-wrap.ms-wrap-datetime-seconds {
+    min-width: 280px !important;
+}
+
+.ms-date-wrap.ms-wrap-time {
+    min-width: 125px !important;
+}
+
+.ms-date-wrap.ms-wrap-time3 {
+    min-width: 150px !important;
+}
+
+.ms-date-wrap:hover {
+    border-color: #94a3b8 !important;
+}
+
+.ms-date-wrap:focus-within {
+    border-color: var(--ms-primary, #3b82f6) !important;
+    box-shadow: 0 0 0 3.5px var(--ms-focus-ring, rgba(59, 130, 246, 0.25)) !important;
+}
+
+#questiontable :is(input, select, textarea).ms-date-input,
+#questiontable .ms-date-wrap input,
+#questiontable .ms-date-wrap input[type="text"],
+form#form .ms-date-wrap input,
+form#form .ms-date-wrap input[type="text"],
+.ms-date-wrap input,
+input.ms-date-input {
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    font-size: 14.5px !important;
+    font-family: inherit !important;
+    color: var(--ms-text-main, #1e293b) !important;
+    max-width: none !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#questiontable :is(input, select, textarea).ms-date-input:focus,
+#questiontable .ms-date-wrap input:focus,
+form#form .ms-date-wrap input:focus,
+.ms-date-wrap input:focus,
+input.ms-date-input:focus {
+    border: none !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.ui-datepicker-trigger,
+img.ui-datepicker-trigger,
+button.today-now-btn {
+    display: none !important;
+}
+
+.ms-date-trigger {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    max-width: 38px !important;
+    flex: 0 0 38px !important;
+    cursor: pointer !important;
+    border: none !important;
+    border-left: 1.5px solid var(--ms-card-border, #cbd5e1) !important;
+    border-radius: 0 !important;
+    background: var(--ms-primary, #3b82f6) !important;
+    color: #fff !important;
+    flex-shrink: 0 !important;
+    transition: filter 0.12s !important;
+    align-self: stretch !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.ms-date-trigger:hover {
+    filter: brightness(1.1) !important;
+}
+
+/* ─── Form Field Normalization & REDCap mobile overrides ─────────────────────── */
+#questiontable input.rci-left,
+form#form input.rci-left,
+input.rci-left {
+    max-width: 100% !important;
+}
+
+form#form input[type="text"],
+form#form input[type="password"],
+form#form input[type="number"],
+form#form input[type="email"],
+form#form input[type="tel"],
+form#form select,
+#questiontable :is(input:not([type="radio"]):not([type="checkbox"]):not([type="button"]):not([type="submit"]):not([type="image"]):not([type="file"]):not([type="reset"]):not(.rc-autocomplete), select) {
+    height: auto !important;
+    min-height: 40px !important;
+    line-height: normal !important;
+    box-sizing: border-box !important;
+}
+
+@media(max-width: 540px) {
+    .ms-picker-cols {
+        flex-direction: column;
+    }
+    .ms-picker-clock {
+        border-left: none;
+        border-top: 1px solid var(--ms-card-border, #e2e8f0);
+    }
+}
+
+/* ─── Mobile View Adjustments ────────────────────────────────────────────────── */
+@media screen and (max-width: 768px) {
+    html, body, html body {
+        background-image: none !important;
+        background: var(--ms-card-bg, #ffffff) !important;
+        background-color: var(--ms-card-bg, #ffffff) !important;
+    }
+
+    html body div#pagecontainer,
+    html body #pagecontainer,
+    div#pagecontainer,
+    #pagecontainer {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        min-height: 100vh !important;
+    }
+
+    html body div#container,
+    html body #container,
+    div#container,
+    #container {
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding-bottom: 24px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 100vh !important;
+        box-sizing: border-box !important;
+    }
+
+    #surveytitlelogo {
+        padding: 16px 16px 10px !important;
+    }
+
+    #surveyinstructions,
+    #surveyacknowledgment {
+        padding: 12px 16px 16px !important;
+    }
+
+    #questiontable > tbody > tr.surveysubmit > td,
+    #questiontable > tbody > tr.surveysubmit > td.labelrc,
+    #questiontable > tbody > tr:has(button[name^="submit-btn"]) > td,
+    #questiontable tr.surveysubmit > td.labelrc,
+    #questiontable tr.surveysubmit > td,
+    #questiontable tr:has(button[name^="submit-btn"]) > td {
+        padding: 24px 20px 64px !important;
+    }
+
+    #questiontable td.data span[data-kind='field-value'],
+    #questiontable td.labelrc span[data-kind='field-value'],
+    #questiontable span[data-kind='field-value'] {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    #questiontable input:not([type="radio"]):not([type="checkbox"]):not([type="button"]):not([type="submit"]):not([type="file"]):not([type="hidden"]):not(.rc-autocomplete),
+    #questiontable input[type="text"],
+    #questiontable input[type="number"],
+    #questiontable input[type="password"],
+    #questiontable input[type="tel"],
+    #questiontable input[type="email"],
+    #questiontable input.rci-left,
+    form#form input.rci-left,
+    #questiontable textarea,
+    #questiontable select:not(.rc-autocomplete) {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 40px !important;
+        box-sizing: border-box !important;
+    }
+
+    #questiontable .ms-date-wrap,
+    form#form .ms-date-wrap,
+    .ms-date-wrap {
+        display: flex !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        box-sizing: border-box !important;
+    }
+
+    #questiontable .ms-date-wrap input,
+    form#form .ms-date-wrap input,
+    .ms-date-wrap input,
+    input.ms-date-input {
+        width: 100% !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 100% !important;
+        min-height: 0 !important;
+    }
+
+    .ms-date-trigger {
+        flex: 0 0 42px !important;
+        width: 42px !important;
+        min-width: 42px !important;
+        max-width: 42px !important;
+    }
+}
